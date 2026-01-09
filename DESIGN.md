@@ -1,7 +1,7 @@
-# Obsidian Sync Tool - Design Document
+# Markdown Sync Tool - Design Document
 
 ## Overview
-An npm module that synchronizes Markdown files from source directories (like Obsidian vaults) into a target repository. Multiple users can sync their files independently, with files organized by configurable rules based on folder paths and frontmatter tags.
+An npm module that synchronizes Markdown files from source directories into a target repository. Multiple users can sync their files independently, with files organized by configurable rules based on folder paths and frontmatter tags.
 
 ## Core Principles
 1. **Read-only source**: Never modify files in source directories
@@ -12,7 +12,7 @@ An npm module that synchronizes Markdown files from source directories (like Obs
 ## User Identity Resolution
 The tool determines user ID in this order:
 1. `git config user.email` → extract username (portion before @)
-2. Environment variable `OBSIDIAN_SYNC_USER`
+2. Environment variable `MARKDOWN_SYNC_USER`
 3. Config file `userId` field
 4. **Error if none found** - user must configure identity
 
@@ -20,22 +20,22 @@ The tool determines user ID in this order:
 User ID is injected before file extension:
 ```
 Source: vault/daily-notes/2024-01-09.md
-Output: notes/logs/2024-01-09.josh.md
+Output: notes/logs/2024-01-09.username.md
 
 Source: vault/projects/website.md (with #working tag)
-Output: projects/website.josh.md
+Output: projects/website.username.md
 ```
 
 **Collision Detection**: If two users would produce the same output path, throw an error and stop the sync. Users must resolve conflicts manually.
 
 ## Configuration
 
-Config file: `obsidian-sync.config.js`
+Config file: `markdown-sync.config.js`
 
 ```javascript
 module.exports = {
-  userId: 'josh', // Optional: override auto-detection
-  sourceDir: '/Users/josh/Documents/Obsidian/MyVault',
+  userId: 'username', // Optional: override auto-detection
+  sourceDir: '/Users/username/Documents/notes',
   outputDir: './synced-notes',
 
   // Routing rules - evaluated in order, first match wins
@@ -64,7 +64,7 @@ module.exports = {
   ],
 
   // Optional: patterns to exclude
-  exclude: ['**/.obsidian/**', '**/templates/**']
+  exclude: ['**/templates/**', '**/drafts/**']
 };
 ```
 
@@ -111,19 +111,19 @@ For each source file:
 
 ```bash
 # Sync files
-obsidian-sync sync
+markdown-sync sync
 
 # Check what would change without syncing
-obsidian-sync status
+markdown-sync status
 
 # Clean up all files for current user
-obsidian-sync clean
+markdown-sync clean
 ```
 
 ## Project Structure
 
 ```
-obsidian-convert/new/
+markdown-sync/
 ├── src/
 │   ├── index.ts           # Main sync logic
 │   ├── config.ts          # Config loading
@@ -132,7 +132,7 @@ obsidian-convert/new/
 │   ├── frontmatter.ts     # Parse YAML frontmatter
 │   └── cli.ts             # CLI entry point
 ├── dist/                  # Compiled JS
-├── obsidian-sync.config.js  # Example config
+├── markdown-sync.config.js  # Example config
 ├── package.json
 ├── tsconfig.json
 ├── DESIGN.md             # This file
