@@ -107,8 +107,6 @@ function hasRequiredFields(
 
   for (const [propName, requiredValue] of Object.entries(requireProps)) {
     const actualValue = frontmatter.props[propName];
-
-    // Property must exist
     if (actualValue === undefined) {
       return false;
     }
@@ -119,16 +117,10 @@ function hasRequiredFields(
     }
 
     // Array means value must match one of the options
-    if (Array.isArray(requiredValue)) {
-      const actualString = String(actualValue);
-      if (!requiredValue.includes(actualString)) {
-        return false;
-      }
-    } else {
-      // Single string means exact match
-      if (String(actualValue) !== requiredValue) {
-        return false;
-      }
+    const requiredValues = Array.isArray(requiredValue) ? requiredValue : [requiredValue];
+    const actualString = String(actualValue);
+    if (!requiredValues.some((value) => actualString.includes(value))) {
+      return false;
     }
   }
 

@@ -13,6 +13,7 @@
     "test": "vitest",
     "lint": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.ts\"",
+    "pre-commit": "npm run format && npm run lint && npm run test",
     "mdsync": "tsx src/cli.ts"
   },
   "keywords": [
