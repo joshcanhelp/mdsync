@@ -3,3 +3,7 @@ dist/
 *.log
 .DS_Store
 *.tsbuildinfo
+
+# User-specific configuration
+.markdown-sync.user.js
+markdown-sync.config.js
