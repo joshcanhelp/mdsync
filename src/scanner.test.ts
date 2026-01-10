@@ -193,7 +193,7 @@ tags:
     expect(files).toHaveLength(3);
   });
 
-  it("should filter files by required prop with exact value", async () => {
+  it("should filter files by required prop with partial match (includes)", async () => {
     await writeFile(
       join(sourceDir, "published.md"),
       `---
@@ -216,7 +216,7 @@ status: draft
       routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
       exclude: [],
       requireTags: [],
-      requireProps: { status: "published" },
+      requireProps: { status: "publish" },
     };
 
     const files = await scanSourceFiles(config);
@@ -225,7 +225,40 @@ status: draft
     expect(files[0].relativePath).toBe("published.md");
   });
 
-  it("should filter files by required prop with multiple allowed values", async () => {
+  it("should filter files by required prop matching substring in link", async () => {
+    await writeFile(
+      join(sourceDir, "with-link.md"),
+      `---
+references: "[[Technology/Publishing Obsidian notes]]"
+---
+# With Link`
+    );
+    await writeFile(
+      join(sourceDir, "different-link.md"),
+      `---
+references: "[[Other/Random Topic]]"
+---
+# Different Link`
+    );
+    await writeFile(join(sourceDir, "no-link.md"), "# No Link");
+
+    const config: Config = {
+      userId: "testuser",
+      sourceDir,
+      outputDir,
+      routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
+      exclude: [],
+      requireTags: [],
+      requireProps: { references: "[[Technology/Publishing Obsidian" },
+    };
+
+    const files = await scanSourceFiles(config);
+
+    expect(files).toHaveLength(1);
+    expect(files[0].relativePath).toBe("with-link.md");
+  });
+
+  it("should filter files by required prop with multiple partial matches", async () => {
     await writeFile(
       join(sourceDir, "published.md"),
       `---
@@ -234,11 +267,11 @@ status: published
 # Published`
     );
     await writeFile(
-      join(sourceDir, "review.md"),
+      join(sourceDir, "reviewing.md"),
       `---
-status: review
+status: reviewing
 ---
-# Review`
+# Reviewing`
     );
     await writeFile(
       join(sourceDir, "draft.md"),
@@ -255,14 +288,14 @@ status: draft
       routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
       exclude: [],
       requireTags: [],
-      requireProps: { status: ["published", "review"] },
+      requireProps: { status: ["publish", "review"] },
     };
 
     const files = await scanSourceFiles(config);
 
     expect(files).toHaveLength(2);
     expect(files.some((f) => f.relativePath === "published.md")).toBe(true);
-    expect(files.some((f) => f.relativePath === "review.md")).toBe(true);
+    expect(files.some((f) => f.relativePath === "reviewing.md")).toBe(true);
   });
 
   it("should filter files by required prop with wildcard", async () => {
