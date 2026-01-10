@@ -30,36 +30,30 @@ Output: projects/website.username.md
 
 ## Configuration
 
-Config file: `markdown-sync.config.js`
+The tool uses a **two-config approach** to separate repo-wide settings from user-specific settings:
+
+### 1. Repo Config: `markdown-sync.config.js`
+**Commit this file** - Contains shared settings for all users.
 
 ```javascript
 module.exports = {
-  userId: 'username', // Optional: override auto-detection
-  sourceDir: '/Users/username/Documents/notes',
-  outputDir: './synced-notes',
+  // Output directory (relative to repo root)
+  outputDir: './notes',
 
   // Routing rules - evaluated in order, first match wins
   routes: [
     {
-      // Match by source path pattern
       sourcePath: 'Logs/**/*.md',
-      outputPath: 'notes/logs'
+      outputPath: 'logs'
     },
     {
-      // Match by frontmatter tag
       tag: 'working',
       outputPath: 'projects'
     },
     {
-      // Match by source path OR tag
       sourcePath: 'Archive/**/*.md',
       tag: 'archived',
       outputPath: 'archive'
-    },
-    {
-      // Default catch-all
-      sourcePath: '**/*.md',
-      outputPath: 'notes'
     }
   ],
 
@@ -67,6 +61,26 @@ module.exports = {
   exclude: ['**/templates/**', '**/drafts/**']
 };
 ```
+
+### 2. User Config: `.markdown-sync.user.js`
+**DO NOT commit** - Contains personal settings (add to `.gitignore`).
+
+```javascript
+module.exports = {
+  // Optional: override auto-detected user ID
+  userId: 'josh',
+
+  // Required: your source directory
+  sourceDir: '/Users/josh/Documents/notes'
+};
+```
+
+### Configuration Priority
+Settings are merged with this precedence (highest to lowest):
+1. User config (`.markdown-sync.user.js` in repo root or home directory)
+2. Repo config (`markdown-sync.config.js` in repo root)
+3. Environment variables (`MARKDOWN_SYNC_USER`)
+4. Auto-detection (git config)
 
 ## Routing Logic
 
@@ -118,26 +132,6 @@ markdown-sync status
 
 # Clean up all files for current user
 markdown-sync clean
-```
-
-## Project Structure
-
-```
-markdown-sync/
-├── src/
-│   ├── index.ts           # Main sync logic
-│   ├── config.ts          # Config loading
-│   ├── user.ts            # User ID detection
-│   ├── routing.ts         # Route matching logic
-│   ├── frontmatter.ts     # Parse YAML frontmatter
-│   └── cli.ts             # CLI entry point
-├── dist/                  # Compiled JS
-├── markdown-sync.config.js  # Example config
-├── package.json
-├── tsconfig.json
-├── DESIGN.md             # This file
-├── CHOP.md               # AI coding best practices
-└── README.md             # User documentation
 ```
 
 ## Future Enhancements (Post-v1)
