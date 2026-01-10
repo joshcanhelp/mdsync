@@ -10,8 +10,5 @@ module.exports = {
   // userId: 'josh',
 
   // Required: your source directory containing markdown files
-  sourceDir: '/Users/josh/Documents/notes',
-
-  // Optional: override the repo's output directory
-  // outputDir: './my-custom-notes-dir'
+  sourceDir: '/Users/josh/Documents/notes'
 };
