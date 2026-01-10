@@ -23,8 +23,6 @@ export interface UserConfig {
   userId?: string;
   // Source directory containing markdown files
   sourceDir: string;
-  // Optional override of repo's output directory
-  outputDir?: string;
 }
 
 // Merged configuration with all required fields populated

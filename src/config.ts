@@ -109,7 +109,7 @@ function mergeConfig(repoConfig: RepoConfig, userConfig: UserConfig | null): Con
   return {
     userId,
     sourceDir: userConfig.sourceDir,
-    outputDir: userConfig.outputDir || repoConfig.outputDir,
+    outputDir: repoConfig.outputDir,
     routes: repoConfig.routes,
     exclude: repoConfig.exclude || [],
   };

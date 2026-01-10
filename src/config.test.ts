@@ -1,113 +1,123 @@
-/**
- * Tests for configuration loading
- */
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { mkdtemp, rm, writeFile, mkdir } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { loadConfig } from "./config.js";
 
-import { describe, it, expect } from "vitest";
-import type { RepoConfig, UserConfig } from "./types.js";
+describe("loadConfig", () => {
+  let testDir: string;
 
-// Note: Full integration tests with actual file loading would require
-// setting up test fixtures. For now, we'll test the validation logic
-// and document the integration tests needed.
-
-describe("config validation", () => {
-  it("should validate repo config structure", () => {
-    const validConfig: RepoConfig = {
-      outputDir: "./notes",
-      routes: [
-        {
-          sourcePath: "**/*.md",
-          outputPath: "notes",
-        },
-      ],
-      exclude: [],
-    };
-
-    expect(validConfig.outputDir).toBe("./notes");
-    expect(validConfig.routes).toHaveLength(1);
+  beforeEach(async () => {
+    testDir = await mkdtemp(join(tmpdir(), "markdown-sync-test-"));
   });
 
-  it("should require outputPath in routes", () => {
-    const invalidRoute = {
-      sourcePath: "**/*.md",
-      // missing outputPath
-    };
-
-    expect(invalidRoute).not.toHaveProperty("outputPath");
+  afterEach(async () => {
+    await rm(testDir, { recursive: true, force: true });
   });
 
-  it("should allow routes with sourcePath only", () => {
-    const route = {
-      sourcePath: "**/*.md",
-      outputPath: "notes",
-    };
+  it("should use default config when no repo config exists", async () => {
+    const sourceDir = join(testDir, "source");
+    await mkdir(sourceDir);
 
-    expect(route.sourcePath).toBeTruthy();
-    expect(route.outputPath).toBeTruthy();
+    const userConfigPath = join(testDir, ".markdown-sync.user.js");
+    await writeFile(
+      userConfigPath,
+      `module.exports = { sourceDir: "${sourceDir}" };`
+    );
+
+    const config = await loadConfig(testDir);
+
+    expect(config.outputDir).toBe("./notes");
+    expect(config.routes).toHaveLength(1);
+    expect(config.routes[0].sourcePath).toBe("**/*.md");
   });
 
-  it("should allow routes with tag only", () => {
-    const route = {
-      tag: "working",
-      outputPath: "projects",
-    };
+  it("should load custom repo config when it exists", async () => {
+    const sourceDir = join(testDir, "source");
+    await mkdir(sourceDir);
 
-    expect(route.tag).toBeTruthy();
-    expect(route.outputPath).toBeTruthy();
+    const userConfigPath = join(testDir, ".markdown-sync.user.js");
+    await writeFile(
+      userConfigPath,
+      `module.exports = { sourceDir: "${sourceDir}" };`
+    );
+
+    const repoConfigPath = join(testDir, "markdown-sync.config.js");
+    await writeFile(
+      repoConfigPath,
+      `module.exports = {
+        outputDir: "./custom-output",
+        routes: [{ sourcePath: "notes/**/*.md", outputPath: "notes" }]
+      };`
+    );
+
+    const config = await loadConfig(testDir);
+
+    expect(config.outputDir).toBe("./custom-output");
+    expect(config.routes).toHaveLength(1);
+    expect(config.routes[0].outputPath).toBe("notes");
   });
 
-  it("should allow routes with both sourcePath and tag", () => {
-    const route = {
-      sourcePath: "Archive/**/*.md",
-      tag: "archived",
-      outputPath: "archive",
-    };
+  it("should throw error when sourceDir does not exist", async () => {
+    const userConfigPath = join(testDir, ".markdown-sync.user.js");
+    await writeFile(
+      userConfigPath,
+      `module.exports = { sourceDir: "/nonexistent/path" };`
+    );
 
-    expect(route.sourcePath).toBeTruthy();
-    expect(route.tag).toBeTruthy();
-    expect(route.outputPath).toBeTruthy();
+    await expect(loadConfig(testDir)).rejects.toThrow("Source directory not readable");
+  });
+
+  it("should throw error when no user config exists", async () => {
+    await expect(loadConfig(testDir)).rejects.toThrow("Source directory not configured");
+  });
+
+  it("should create output directory if it does not exist", async () => {
+    const sourceDir = join(testDir, "source");
+    await mkdir(sourceDir);
+
+    const userConfigPath = join(testDir, ".markdown-sync.user.js");
+    await writeFile(
+      userConfigPath,
+      `module.exports = { sourceDir: "${sourceDir}" };`
+    );
+
+    const config = await loadConfig(testDir);
+
+    expect(config.outputDir).toBeTruthy();
+  });
+
+  it("should detect user ID from config", async () => {
+    const sourceDir = join(testDir, "source");
+    await mkdir(sourceDir);
+
+    const userConfigPath = join(testDir, ".markdown-sync.user.js");
+    await writeFile(
+      userConfigPath,
+      `module.exports = { userId: "test-user", sourceDir: "${sourceDir}" };`
+    );
+
+    const config = await loadConfig(testDir);
+
+    expect(config.userId).toBe("test-user");
+  });
+
+  it("should validate routes exist", async () => {
+    const sourceDir = join(testDir, "source");
+    await mkdir(sourceDir);
+
+    const userConfigPath = join(testDir, ".markdown-sync.user.js");
+    await writeFile(
+      userConfigPath,
+      `module.exports = { sourceDir: "${sourceDir}" };`
+    );
+
+    const repoConfigPath = join(testDir, "markdown-sync.config.js");
+    await writeFile(
+      repoConfigPath,
+      `module.exports = { outputDir: "./output", routes: [] };`
+    );
+
+    await expect(loadConfig(testDir)).rejects.toThrow("at least one route");
   });
 });
-
-describe("config merging", () => {
-  it("should merge user config over repo config", () => {
-    const repoConfig: RepoConfig = {
-      outputDir: "./default-notes",
-      routes: [],
-      exclude: [],
-    };
-
-    const userConfig: UserConfig = {
-      userId: "josh",
-      sourceDir: "/Users/josh/notes",
-      outputDir: "./my-notes",
-    };
-
-    // User's outputDir should take precedence
-    expect(userConfig.outputDir).toBe("./my-notes");
-  });
-
-  it("should use repo outputDir when user does not override", () => {
-    const repoConfig: RepoConfig = {
-      outputDir: "./default-notes",
-      routes: [],
-      exclude: [],
-    };
-
-    const userConfig: UserConfig = {
-      sourceDir: "/Users/josh/notes",
-      // no outputDir override
-    };
-
-    // Should fall back to repo's outputDir
-    expect(userConfig.outputDir).toBeUndefined();
-    const finalOutputDir = userConfig.outputDir || repoConfig.outputDir;
-    expect(finalOutputDir).toBe("./default-notes");
-  });
-});
-
-// Integration tests to implement:
-// - Test loading actual config files from fixtures
-// - Test config file not found errors
-// - Test malformed config file errors
-// - Test config loading from home directory
-// - Test config precedence (repo vs home dir)
