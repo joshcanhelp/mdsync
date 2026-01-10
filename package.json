@@ -12,7 +12,8 @@
     "dev": "tsc --watch",
     "test": "vitest",
     "lint": "tsc --noEmit",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "mdsync": "tsx src/cli.ts"
   },
   "keywords": [
     "markdown",
@@ -20,12 +21,13 @@
     "notes",
     "multi-user"
   ],
-  "author": "",
+  "author": "Josh C <josh@joshcanhelp.com>",
   "license": "MIT",
   "devDependencies": {
     "@tsconfig/node24": "^24.0.3",
     "@types/node": "^20.0.0",
     "prettier": "^3.7.4",
+    "tsx": "^4.21.0",
     "typescript": "^5.3.0",
     "vitest": "^4.0.16"
   },
