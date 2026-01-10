@@ -10,6 +10,7 @@ An npm module that synchronizes Markdown files from source directories into a ta
 4. **Configurable routing**: Map source files to output locations based on folder patterns and tags
 
 ## User Identity Resolution
+
 The tool determines user ID in this order:
 1. `git config user.email` → extract username (portion before @)
 2. Environment variable `MARKDOWN_SYNC_USER`
@@ -17,7 +18,9 @@ The tool determines user ID in this order:
 4. **Error if none found** - user must configure identity
 
 ## Output File Naming
+
 User ID is injected before file extension:
+
 ```
 Source: vault/daily-notes/2024-01-09.md
 Output: notes/logs/2024-01-09.username.md
@@ -40,6 +43,22 @@ module.exports = {
   // Output directory (relative to repo root)
   outputDir: './notes',
 
+  // Optional: patterns to exclude
+  exclude: ['**/templates/**', '**/drafts/**']
+};
+```
+
+### 2. User Config: `.markdown-sync.user.js`
+**DO NOT commit** - Contains personal settings (add to `.gitignore`).
+
+```javascript
+module.exports = {
+  // Optional: override auto-detected user ID
+  userId: 'josh',
+
+  // Required: your source directory
+  sourceDir: '/Users/josh/Documents/notes'
+
   // Routing rules - evaluated in order, first match wins
   routes: [
     {
@@ -56,27 +75,13 @@ module.exports = {
       outputPath: 'archive'
     }
   ],
-
-  // Optional: patterns to exclude
-  exclude: ['**/templates/**', '**/drafts/**']
-};
-```
-
-### 2. User Config: `.markdown-sync.user.js`
-**DO NOT commit** - Contains personal settings (add to `.gitignore`).
-
-```javascript
-module.exports = {
-  // Optional: override auto-detected user ID
-  userId: 'josh',
-
-  // Required: your source directory
-  sourceDir: '/Users/josh/Documents/notes'
 };
 ```
 
 ### Configuration Priority
+
 Settings are merged with this precedence (highest to lowest):
+
 1. User config (`.markdown-sync.user.js` in repo root or home directory)
 2. Repo config (`markdown-sync.config.js` in repo root)
 3. Environment variables (`MARKDOWN_SYNC_USER`)
