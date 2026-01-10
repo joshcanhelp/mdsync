@@ -1,9 +1,11 @@
 # Markdown Sync Tool - Design Document
 
 ## Overview
+
 An npm module that synchronizes Markdown files from source directories into a target repository. Multiple users can sync their files independently, with files organized by configurable rules based on folder paths and frontmatter tags.
 
 ## Core Principles
+
 1. **Read-only source**: Never modify files in source directories
 2. **Stateless sync**: No manifest files - scan and sync on each run
 3. **Multi-user support**: User ID embedded in output filenames
@@ -12,6 +14,7 @@ An npm module that synchronizes Markdown files from source directories into a ta
 ## User Identity Resolution
 
 The tool determines user ID in this order:
+
 1. `git config user.email` → extract username (portion before @)
 2. Environment variable `MARKDOWN_SYNC_USER`
 3. Config file `userId` field
@@ -33,50 +36,7 @@ Output: projects/website.username.md
 
 ## Configuration
 
-The tool uses a **two-config approach** to separate repo-wide settings from user-specific settings:
-
-### 1. Repo Config: `markdown-sync.config.js`
-**Commit this file** - Contains shared settings for all users.
-
-```javascript
-module.exports = {
-  // Output directory (relative to repo root)
-  outputDir: './notes',
-
-  // Optional: patterns to exclude
-  exclude: ['**/templates/**', '**/drafts/**']
-};
-```
-
-### 2. User Config: `.markdown-sync.user.js`
-**DO NOT commit** - Contains personal settings (add to `.gitignore`).
-
-```javascript
-module.exports = {
-  // Optional: override auto-detected user ID
-  userId: 'josh',
-
-  // Required: your source directory
-  sourceDir: '/Users/josh/Documents/notes'
-
-  // Routing rules - evaluated in order, first match wins
-  routes: [
-    {
-      sourcePath: 'Logs/**/*.md',
-      outputPath: 'logs'
-    },
-    {
-      tag: 'working',
-      outputPath: 'projects'
-    },
-    {
-      sourcePath: 'Archive/**/*.md',
-      tag: 'archived',
-      outputPath: 'archive'
-    }
-  ],
-};
-```
+The tool uses a **two-config approach** to separate repo-wide settings from user-specific settings, stored in `markdown-sync.config.js`, and repo-specific settings in `.markdown-sync.user.js`. See the exmaple files in this repo for specific instructions.
 
 ### Configuration Priority
 
@@ -90,6 +50,7 @@ Settings are merged with this precedence (highest to lowest):
 ## Routing Logic
 
 For each source file:
+
 1. Read file to check for frontmatter tags (YAML block at start)
 2. Evaluate routes in order:
    - If route has `sourcePath`: check if file path matches glob pattern
@@ -100,7 +61,6 @@ For each source file:
 
 ## Sync Algorithm
 
-```
 1. Load configuration
 2. Detect user ID
 3. Scan source directory for files matching route patterns
@@ -113,7 +73,6 @@ For each source file:
 5. Scan output directories for files belonging to current user (*.userId.ext)
 6. Delete any output files that don't have a corresponding source
 7. Report summary: X files copied, Y files deleted, Z collisions
-```
 
 ## Technology Stack
 
