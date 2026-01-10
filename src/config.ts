@@ -76,23 +76,26 @@ function validateRepoConfig(config: unknown): asserts config is RepoConfig {
     throw new Error("Repository config must specify outputDir");
   }
 
-  if (!Array.isArray(c.routes) || c.routes.length === 0) {
-    throw new Error("Repository config must specify at least one route");
-  }
-
-  for (const route of c.routes) {
-    if (!route || typeof route !== "object") {
-      throw new Error("Each route must be an object");
+  // Routes are optional - they can come from user config
+  if (c.routes !== undefined) {
+    if (!Array.isArray(c.routes)) {
+      throw new Error("Repository config routes must be an array");
     }
 
-    const r = route as Record<string, unknown>;
+    for (const route of c.routes) {
+      if (!route || typeof route !== "object") {
+        throw new Error("Each route must be an object");
+      }
 
-    if (!r.outputPath || typeof r.outputPath !== "string") {
-      throw new Error("Each route must specify outputPath");
-    }
+      const r = route as Record<string, unknown>;
 
-    if (!r.sourcePath && !r.tag) {
-      throw new Error("Each route must specify sourcePath, tag, or both");
+      if (!r.outputPath || typeof r.outputPath !== "string") {
+        throw new Error("Each route must specify outputPath");
+      }
+
+      if (!r.sourcePath && !r.tag) {
+        throw new Error("Each route must specify sourcePath, tag, or both");
+      }
     }
   }
 }
@@ -108,14 +111,24 @@ function mergeConfig(repoConfig: RepoConfig, userConfig: UserConfig | null): Con
     );
   }
 
+  // Merge logic: prefer repo config when defined, but allow user config as fallback
+  // Even if repo config file exists, it might not define all fields
+  const routes =
+    repoConfig.routes && repoConfig.routes.length > 0
+      ? repoConfig.routes
+      : userConfig?.routes || [];
+  const exclude = repoConfig.exclude || userConfig?.exclude || [];
+  const requireTags = repoConfig.requireTags || userConfig?.requireTags || [];
+  const requireProps = repoConfig.requireProps || userConfig?.requireProps || {};
+
   return {
     userId,
     sourceDir: userConfig.sourceDir,
     outputDir: repoConfig.outputDir,
-    routes: repoConfig.routes,
-    exclude: repoConfig.exclude || [],
-    requireTags: repoConfig.requireTags || [],
-    requireProps: repoConfig.requireProps || {},
+    routes,
+    exclude,
+    requireTags,
+    requireProps,
   };
 }
 

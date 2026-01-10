@@ -14,7 +14,7 @@ export async function scanSourceFiles(config: Config): Promise<SourceFile[]> {
     const relativePath = relative(config.sourceDir, absolutePath);
     const frontmatter = await parseFrontmatter(absolutePath);
 
-    if (!hasRequiredFields(frontmatter, config.requireTags, config.requireProps)) {
+    if (!hasRequiredFields(frontmatter, config.requireTags || [], config.requireProps || {})) {
       continue;
     }
 

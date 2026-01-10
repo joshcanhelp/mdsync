@@ -12,7 +12,8 @@ export interface RepoConfig {
   // Output directory relative to repo root
   outputDir: string;
   // Routing rules evaluated in order (first match wins)
-  routes: Route[];
+  // Optional - can be provided by user config if not specified
+  routes?: Route[];
   // Optional glob patterns to exclude from syncing
   exclude?: string[];
   // Optional required tags (files must have ALL these tags)
@@ -29,6 +30,14 @@ export interface UserConfig {
   userId?: string;
   // Source directory containing markdown files
   sourceDir: string;
+  // Optional routes (used if no repo config exists)
+  routes?: Route[];
+  // Optional exclude patterns
+  exclude?: string[];
+  // Optional required tags
+  requireTags?: string[];
+  // Optional required props
+  requireProps?: Record<string, string | string[]>;
 }
 
 // Merged configuration with all required fields populated

@@ -100,6 +100,6 @@ describe("loadConfig", () => {
     const repoConfigPath = join(testDir, "markdown-sync.config.js");
     await writeFile(repoConfigPath, `module.exports = { outputDir: "./output", routes: [] };`);
 
-    await expect(loadConfig(testDir)).rejects.toThrow("at least one route");
+    await expect(loadConfig(testDir)).rejects.toThrow("At least one route is required");
   });
 });
