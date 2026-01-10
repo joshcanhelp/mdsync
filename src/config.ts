@@ -32,9 +32,7 @@ async function loadRepoConfig(repoRoot: string): Promise<RepoConfig> {
   try {
     await access(configPath);
     const configModule = await import(`file://${resolve(configPath)}`);
-    const config = configModule.default || configModule;
-    validateRepoConfig(config);
-    return config;
+    return configModule.default || configModule;
   } catch (error) {
     if (error instanceof Error && error.message.includes("ENOENT")) {
       return DEFAULT_CONFIG;
@@ -62,41 +60,6 @@ async function loadUserConfig(repoRoot: string): Promise<UserConfig | null> {
     return configModule.default || configModule;
   } catch {
     return null;
-  }
-}
-
-function validateRepoConfig(config: unknown): asserts config is RepoConfig {
-  if (!config || typeof config !== "object") {
-    throw new Error("Repository config must be an object");
-  }
-
-  const c = config as Record<string, unknown>;
-
-  if (!c.outputDir || typeof c.outputDir !== "string") {
-    throw new Error("Repository config must specify outputDir");
-  }
-
-  // Routes are optional - they can come from user config
-  if (c.routes !== undefined) {
-    if (!Array.isArray(c.routes)) {
-      throw new Error("Repository config routes must be an array");
-    }
-
-    for (const route of c.routes) {
-      if (!route || typeof route !== "object") {
-        throw new Error("Each route must be an object");
-      }
-
-      const r = route as Record<string, unknown>;
-
-      if (!r.outputPath || typeof r.outputPath !== "string") {
-        throw new Error("Each route must specify outputPath");
-      }
-
-      if (!r.sourcePath && !r.tag) {
-        throw new Error("Each route must specify sourcePath, tag, or both");
-      }
-    }
   }
 }
 
@@ -164,8 +127,22 @@ async function validateConfig(config: Config, repoRoot: string): Promise<void> {
     }
   }
 
-  if (!config.routes || config.routes.length === 0) {
+  if (!config.routes || !Array.isArray(config.routes) || config.routes.length === 0) {
     errors.push("At least one route is required");
+  }
+
+  for (const route of config.routes) {
+    if (!route || typeof route !== "object") {
+      throw new Error("Each route must be an object");
+    }
+
+    if (!route.outputPath || typeof route.outputPath !== "string") {
+      throw new Error("Each route must specify outputPath");
+    }
+
+    if (!route.sourcePath && !route.tag) {
+      throw new Error("Each route must specify sourcePath, tag, or both");
+    }
   }
 
   if (errors.length > 0) {
