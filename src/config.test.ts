@@ -20,10 +20,7 @@ describe("loadConfig", () => {
     await mkdir(sourceDir);
 
     const userConfigPath = join(testDir, ".markdown-sync.user.js");
-    await writeFile(
-      userConfigPath,
-      `module.exports = { sourceDir: "${sourceDir}" };`
-    );
+    await writeFile(userConfigPath, `module.exports = { sourceDir: "${sourceDir}" };`);
 
     const config = await loadConfig(testDir);
 
@@ -37,10 +34,7 @@ describe("loadConfig", () => {
     await mkdir(sourceDir);
 
     const userConfigPath = join(testDir, ".markdown-sync.user.js");
-    await writeFile(
-      userConfigPath,
-      `module.exports = { sourceDir: "${sourceDir}" };`
-    );
+    await writeFile(userConfigPath, `module.exports = { sourceDir: "${sourceDir}" };`);
 
     const repoConfigPath = join(testDir, "markdown-sync.config.js");
     await writeFile(
@@ -60,10 +54,7 @@ describe("loadConfig", () => {
 
   it("should throw error when sourceDir does not exist", async () => {
     const userConfigPath = join(testDir, ".markdown-sync.user.js");
-    await writeFile(
-      userConfigPath,
-      `module.exports = { sourceDir: "/nonexistent/path" };`
-    );
+    await writeFile(userConfigPath, `module.exports = { sourceDir: "/nonexistent/path" };`);
 
     await expect(loadConfig(testDir)).rejects.toThrow("Source directory not readable");
   });
@@ -77,10 +68,7 @@ describe("loadConfig", () => {
     await mkdir(sourceDir);
 
     const userConfigPath = join(testDir, ".markdown-sync.user.js");
-    await writeFile(
-      userConfigPath,
-      `module.exports = { sourceDir: "${sourceDir}" };`
-    );
+    await writeFile(userConfigPath, `module.exports = { sourceDir: "${sourceDir}" };`);
 
     const config = await loadConfig(testDir);
 
@@ -107,16 +95,10 @@ describe("loadConfig", () => {
     await mkdir(sourceDir);
 
     const userConfigPath = join(testDir, ".markdown-sync.user.js");
-    await writeFile(
-      userConfigPath,
-      `module.exports = { sourceDir: "${sourceDir}" };`
-    );
+    await writeFile(userConfigPath, `module.exports = { sourceDir: "${sourceDir}" };`);
 
     const repoConfigPath = join(testDir, "markdown-sync.config.js");
-    await writeFile(
-      repoConfigPath,
-      `module.exports = { outputDir: "./output", routes: [] };`
-    );
+    await writeFile(repoConfigPath, `module.exports = { outputDir: "./output", routes: [] };`);
 
     await expect(loadConfig(testDir)).rejects.toThrow("at least one route");
   });
