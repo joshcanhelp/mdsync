@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { loadConfig } from "./config.js";
+import { scanSourceFiles } from "./scanner.js";
 
 async function main() {
   const command = process.argv[2] || "help";
@@ -11,6 +12,7 @@ markdown-sync - Sync markdown files with multi-user support
 
 Usage:
   markdown-sync config    Show current configuration
+  markdown-sync scan      Scan source files and show what would be synced
   markdown-sync help      Show this help message
 
 Config files:
@@ -27,6 +29,34 @@ Config files:
       console.log(JSON.stringify(config, null, 2));
     } catch (error) {
       console.error("Error loading config:", error instanceof Error ? error.message : error);
+      process.exit(1);
+    }
+    return;
+  }
+
+  if (command === "scan") {
+    try {
+      const config = await loadConfig();
+      console.log("Scanning source files...\n");
+      const files = await scanSourceFiles(config);
+
+      if (files.length === 0) {
+        console.log("No files found matching routes.");
+        return;
+      }
+
+      console.log(`Found ${files.length} file(s):\n`);
+      for (const file of files) {
+        console.log(`  ${file.relativePath}`);
+        if (file.tags.length > 0) {
+          console.log(`    Tags: ${file.tags.join(", ")}`);
+        }
+        console.log(`    Route: ${file.route.outputPath}`);
+        console.log(`    Output: ${file.outputPath}`);
+        console.log();
+      }
+    } catch (error) {
+      console.error("Error scanning files:", error instanceof Error ? error.message : error);
       process.exit(1);
     }
     return;
