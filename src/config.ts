@@ -14,6 +14,8 @@ const DEFAULT_CONFIG: RepoConfig = {
     },
   ],
   exclude: [],
+  requireTags: [],
+  requireProps: {},
 };
 
 export async function loadConfig(repoRoot: string = process.cwd()): Promise<Config> {
@@ -112,6 +114,8 @@ function mergeConfig(repoConfig: RepoConfig, userConfig: UserConfig | null): Con
     outputDir: repoConfig.outputDir,
     routes: repoConfig.routes,
     exclude: repoConfig.exclude || [],
+    requireTags: repoConfig.requireTags || [],
+    requireProps: repoConfig.requireProps || {},
   };
 }
 

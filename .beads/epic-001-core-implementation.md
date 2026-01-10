@@ -2,7 +2,7 @@
 
 Status: IN_PROGRESS
 Started: 2026-01-09
-Last Updated: 2026-01-09 17:05
+Last Updated: 2026-01-10 06:58
 
 ## Goal
 Build the core markdown-sync npm module with multi-user support and configurable routing.
@@ -15,12 +15,12 @@ Build the core markdown-sync npm module with multi-user support and configurable
 - [x] User ID detection from git config (user.ts + 11 tests)
 - [x] Config loading with validation (config.ts + 7 tests)
 - [x] Config validation (sourceDir, outputDir, routes, userId)
-- [x] Frontmatter parsing (frontmatter.ts + 8 tests)
+- [x] Frontmatter parsing with props extraction (frontmatter.ts + 9 tests)
 - [x] Route matching logic (routing.ts + 9 tests)
-- [x] File scanning with glob matching (scanner.ts + 8 tests)
+- [x] File scanning with glob matching (scanner.ts + 12 tests)
 - [x] CLI entry point for testing (cli.ts)
 - [x] Prettier setup and formatting
-- [x] CLAUDE.md workflow documentation
+- [x] Required frontmatter validation (requireTags, requireProps with value matching)
 
 ### In Progress
 - [ ] **NEXT**: File syncing with collision detection (index.ts)
@@ -32,9 +32,9 @@ Build the core markdown-sync npm module with multi-user support and configurable
 
 ## Current State
 - Build: ✅ Passing
-- Tests: ✅ 43/43 passing
+- Tests: ✅ 48/48 passing
 - Modules: 7 implemented (types, user, config, frontmatter, routing, scanner, cli)
-- Context: ~100k/200k (50%)
+- Context: ~150k/200k (75%)
 
 ## Notes
 - Following CHOP: one module at a time with tests

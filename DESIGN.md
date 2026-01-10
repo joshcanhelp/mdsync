@@ -51,13 +51,33 @@ Settings are merged with this precedence (highest to lowest):
 
 For each source file:
 
-1. Read file to check for frontmatter tags (YAML block at start)
-2. Evaluate routes in order:
+1. Read file to check for frontmatter tags and properties (YAML block at start)
+2. Check required fields:
+   - If `requireTags` is configured: file must have ALL specified tags
+   - If `requireProps` is configured: file must have ALL specified properties with matching values
+   - Skip file if required fields don't match
+3. Evaluate routes in order:
    - If route has `sourcePath`: check if file path matches glob pattern
    - If route has `tag`: check if file has that tag in frontmatter
    - If route has both: match if EITHER condition is true (OR logic)
-3. Use first matching route's `outputPath`
-4. Construct output filename: `<outputPath>/<basename>.<userId>.<ext>`
+4. Use first matching route's `outputPath`
+5. Construct output filename: `<outputPath>/<basename>.<userId>.<ext>`
+
+### Required Properties Validation
+
+The `requireProps` config allows filtering files based on frontmatter property values:
+
+- **Wildcard**: `{ title: "*" }` - requires property exists with any value
+- **Exact match**: `{ status: "published" }` - requires exact value match
+- **Multiple values**: `{ status: ["published", "review"] }` - requires value matches one of the options
+
+Example:
+```javascript
+requireProps: {
+  status: ["published", "review"], // must be published OR review
+  title: "*", // must have a title with any value
+}
+```
 
 ## Sync Algorithm
 

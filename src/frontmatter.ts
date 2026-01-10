@@ -1,11 +1,19 @@
 import { readFile } from "node:fs/promises";
 import matter from "gray-matter";
 
-export async function parseFrontmatter(filePath: string): Promise<string[]> {
+export interface FrontmatterData {
+  tags: string[];
+  props: Record<string, unknown>;
+}
+
+export async function parseFrontmatter(filePath: string): Promise<FrontmatterData> {
   const content = await readFile(filePath, "utf-8");
   const { data } = matter(content);
 
-  return extractTags(data);
+  return {
+    tags: extractTags(data),
+    props: data,
+  };
 }
 
 function extractTags(frontmatter: Record<string, unknown>): string[] {

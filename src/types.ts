@@ -15,6 +15,12 @@ export interface RepoConfig {
   routes: Route[];
   // Optional glob patterns to exclude from syncing
   exclude?: string[];
+  // Optional required tags (files must have ALL these tags)
+  requireTags?: string[];
+  // Optional required props with values (files must have ALL these props with matching values)
+  // Use "*" to require property exists with any value
+  // Use array of strings to require property matches one of the values
+  requireProps?: Record<string, string | string[]>;
 }
 
 // User-specific configuration (not committed)
@@ -32,6 +38,8 @@ export interface Config {
   outputDir: string;
   routes: Route[];
   exclude: string[];
+  requireTags?: string[];
+  requireProps?: Record<string, string | string[]>;
 }
 
 // Information about a source file to be synced

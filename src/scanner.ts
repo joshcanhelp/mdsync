@@ -1,6 +1,6 @@
 import { readdir } from "node:fs/promises";
 import { join, relative, basename, extname } from "node:path";
-import { parseFrontmatter } from "./frontmatter.js";
+import { parseFrontmatter, type FrontmatterData } from "./frontmatter.js";
 import { matchRoute } from "./routing.js";
 import type { Config, SourceFile } from "./types.js";
 
@@ -12,8 +12,13 @@ export async function scanSourceFiles(config: Config): Promise<SourceFile[]> {
 
   for (const absolutePath of filteredFiles) {
     const relativePath = relative(config.sourceDir, absolutePath);
-    const tags = await parseFrontmatter(absolutePath);
-    const route = matchRoute(relativePath, tags, config.routes);
+    const frontmatter = await parseFrontmatter(absolutePath);
+
+    if (!hasRequiredFields(frontmatter, config.requireTags, config.requireProps)) {
+      continue;
+    }
+
+    const route = matchRoute(relativePath, frontmatter.tags, config.routes);
 
     if (!route) {
       continue;
@@ -29,7 +34,7 @@ export async function scanSourceFiles(config: Config): Promise<SourceFile[]> {
     sourceFiles.push({
       absolutePath,
       relativePath,
-      tags,
+      tags: frontmatter.tags,
       route,
       outputPath,
     });
@@ -86,4 +91,46 @@ function generateOutputPath(
   const outputFilename = `${name}.${userId}${ext}`;
 
   return join(outputDir, routeOutputPath, outputFilename);
+}
+
+function hasRequiredFields(
+  frontmatter: FrontmatterData,
+  requireTags: string[],
+  requireProps: Record<string, string | string[]>
+): boolean {
+  if (requireTags.length > 0) {
+    const hasAllTags = requireTags.every((tag) => frontmatter.tags.includes(tag));
+    if (!hasAllTags) {
+      return false;
+    }
+  }
+
+  for (const [propName, requiredValue] of Object.entries(requireProps)) {
+    const actualValue = frontmatter.props[propName];
+
+    // Property must exist
+    if (actualValue === undefined) {
+      return false;
+    }
+
+    // "*" means any value is acceptable
+    if (requiredValue === "*") {
+      continue;
+    }
+
+    // Array means value must match one of the options
+    if (Array.isArray(requiredValue)) {
+      const actualString = String(actualValue);
+      if (!requiredValue.includes(actualString)) {
+        return false;
+      }
+    } else {
+      // Single string means exact match
+      if (String(actualValue) !== requiredValue) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }

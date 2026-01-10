@@ -31,6 +31,8 @@ describe("scanSourceFiles", () => {
       outputDir,
       routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
       exclude: [],
+      requireTags: [],
+      requireProps: {},
     };
 
     const files = await scanSourceFiles(config);
@@ -50,6 +52,8 @@ describe("scanSourceFiles", () => {
       outputDir,
       routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
       exclude: [],
+      requireTags: [],
+      requireProps: {},
     };
 
     const files = await scanSourceFiles(config);
@@ -75,6 +79,8 @@ tags:
       outputDir,
       routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
       exclude: [],
+      requireTags: [],
+      requireProps: {},
     };
 
     const files = await scanSourceFiles(config);
@@ -96,6 +102,8 @@ tags:
         { sourcePath: "**/*.md", outputPath: "notes" },
       ],
       exclude: [],
+      requireTags: [],
+      requireProps: {},
     };
 
     const files = await scanSourceFiles(config);
@@ -119,6 +127,8 @@ tags:
       outputDir,
       routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
       exclude: ["templates/**"],
+      requireTags: [],
+      requireProps: {},
     };
 
     const files = await scanSourceFiles(config);
@@ -136,6 +146,8 @@ tags:
       outputDir,
       routes: [{ sourcePath: "Logs/**/*.md", outputPath: "logs" }],
       exclude: [],
+      requireTags: [],
+      requireProps: {},
     };
 
     const files = await scanSourceFiles(config);
@@ -152,6 +164,8 @@ tags:
       outputDir: "./output",
       routes: [{ sourcePath: "**/*.md", outputPath: "projects" }],
       exclude: [],
+      requireTags: [],
+      requireProps: {},
     };
 
     const files = await scanSourceFiles(config);
@@ -170,10 +184,152 @@ tags:
       outputDir,
       routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
       exclude: [],
+      requireTags: [],
+      requireProps: {},
     };
 
     const files = await scanSourceFiles(config);
 
     expect(files).toHaveLength(3);
+  });
+
+  it("should filter files by required prop with exact value", async () => {
+    await writeFile(
+      join(sourceDir, "published.md"),
+      `---
+status: published
+---
+# Published`
+    );
+    await writeFile(
+      join(sourceDir, "draft.md"),
+      `---
+status: draft
+---
+# Draft`
+    );
+
+    const config: Config = {
+      userId: "testuser",
+      sourceDir,
+      outputDir,
+      routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
+      exclude: [],
+      requireTags: [],
+      requireProps: { status: "published" },
+    };
+
+    const files = await scanSourceFiles(config);
+
+    expect(files).toHaveLength(1);
+    expect(files[0].relativePath).toBe("published.md");
+  });
+
+  it("should filter files by required prop with multiple allowed values", async () => {
+    await writeFile(
+      join(sourceDir, "published.md"),
+      `---
+status: published
+---
+# Published`
+    );
+    await writeFile(
+      join(sourceDir, "review.md"),
+      `---
+status: review
+---
+# Review`
+    );
+    await writeFile(
+      join(sourceDir, "draft.md"),
+      `---
+status: draft
+---
+# Draft`
+    );
+
+    const config: Config = {
+      userId: "testuser",
+      sourceDir,
+      outputDir,
+      routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
+      exclude: [],
+      requireTags: [],
+      requireProps: { status: ["published", "review"] },
+    };
+
+    const files = await scanSourceFiles(config);
+
+    expect(files).toHaveLength(2);
+    expect(files.some((f) => f.relativePath === "published.md")).toBe(true);
+    expect(files.some((f) => f.relativePath === "review.md")).toBe(true);
+  });
+
+  it("should filter files by required prop with wildcard", async () => {
+    await writeFile(
+      join(sourceDir, "with-title.md"),
+      `---
+title: My Title
+---
+# Content`
+    );
+    await writeFile(join(sourceDir, "without-title.md"), "# Content");
+
+    const config: Config = {
+      userId: "testuser",
+      sourceDir,
+      outputDir,
+      routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
+      exclude: [],
+      requireTags: [],
+      requireProps: { title: "*" },
+    };
+
+    const files = await scanSourceFiles(config);
+
+    expect(files).toHaveLength(1);
+    expect(files[0].relativePath).toBe("with-title.md");
+  });
+
+  it("should combine required tags and props", async () => {
+    await writeFile(
+      join(sourceDir, "match.md"),
+      `---
+status: published
+tags:
+  - public
+---
+# Match`
+    );
+    await writeFile(
+      join(sourceDir, "no-tag.md"),
+      `---
+status: published
+---
+# No Tag`
+    );
+    await writeFile(
+      join(sourceDir, "no-prop.md"),
+      `---
+tags:
+  - public
+---
+# No Prop`
+    );
+
+    const config: Config = {
+      userId: "testuser",
+      sourceDir,
+      outputDir,
+      routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
+      exclude: [],
+      requireTags: ["public"],
+      requireProps: { status: "published" },
+    };
+
+    const files = await scanSourceFiles(config);
+
+    expect(files).toHaveLength(1);
+    expect(files[0].relativePath).toBe("match.md");
   });
 });
