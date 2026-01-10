@@ -1,14 +1,13 @@
-// Example configuration file
+// Repository-wide configuration file
 // Copy this to markdown-sync.config.js and customize for your repo
+// This file should be committed to version control
 
 module.exports = {
-  // REPO-SPECIFIC CONFIGURATION (commit this file to the repo)
-  // These settings should be shared across all users of the repo
-
   // Required: output directory to sync to (relative to repo root)
   outputDir: "./notes",
 
-  // Routing rules - evaluated in order, first match wins
+  // Optional: routing rules - evaluated in order, first match wins
+  // If not specified here, routes can be defined in user config
   routes: [
     {
       sourcePath: "Logs/**/*.md",
@@ -31,9 +30,11 @@ module.exports = {
   requireTags: ["public"],
 
   // Optional: require specific frontmatter props with values
-  // Use "*" for any value, string for exact match, array for multiple allowed values
+  // Matching uses substring matching (.includes())
+  // Use "*" for any value, string for partial match, array for multiple options
   requireProps: {
-    status: ["published", "review"], // must be one of these values
+    status: ["published", "review"], // must contain one of these strings
     title: "*", // must exist with any value
+    references: "[[Technology/Publishing", // must contain this substring
   },
 };
