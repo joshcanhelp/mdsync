@@ -1,14 +1,11 @@
 ---
 tags:
   - artifact/devlog
-references:
-  - "[[Technology/CHOP|CHOP]]"
-  - "[[Technology/Publishing Obsidian notes|Publishing Obsidian notes]]"
 ---
-First, I had [[Technology/Claude|Claude]] parse this HN thread:
+First, I had [Claude](https://claude.ai) parse this HN thread:
 https://news.ycombinator.com/item?id=46515696
 
-.. and put together a list of all the tips with an evaluation. Then I had it read [[Bobby Johnson]]'s guide:
+.. and put together a list of all the tips with an evaluation. Then I had it read [People/Bobby Johnson](https://www.linkedin.com/in/notmyself74/)'s guide:
 https://gist.github.com/NotMyself/7d15810b1c4b6fc71b34bd3b3be0f112
 
 I had it merge the two and output a Markdown guide for the project:
@@ -40,3 +37,8 @@ First bug just happened and Claude is struggling. Next one I'll try to debug on 
 Had to dive in on a problem with string matching (more about requirements than broken functionality) and had no problem finding and fixing the issue!
 
 If you're seeing this note, the sync works!
+
+## References
+
+- [CHOP](https://sourcegraph.com/blog/chat-oriented-programming-in-action)
+- [Publishing Obsidian notes](https://github.com/joshcanhelp/md-note-mapper)

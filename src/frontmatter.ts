@@ -16,6 +16,29 @@ export async function parseFrontmatter(filePath: string): Promise<FrontmatterDat
   };
 }
 
+export function parseFrontmatterFromString(content: string): {
+  frontmatter: Record<string, unknown>;
+  content: string;
+} {
+  const { data, content: bodyContent } = matter(content);
+  return {
+    frontmatter: data,
+    content: bodyContent,
+  };
+}
+
+export function stringifyFrontmatter(
+  frontmatter: Record<string, unknown>,
+  content: string
+): string {
+  // If frontmatter is empty, just return the content
+  if (Object.keys(frontmatter).length === 0) {
+    return content;
+  }
+
+  return matter.stringify(content, frontmatter);
+}
+
 function extractTags(frontmatter: Record<string, unknown>): string[] {
   const tags = frontmatter.tags;
 

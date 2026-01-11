@@ -72,16 +72,16 @@ See DESIGN.md for detailed technical specifications including:
 - [x] Add transformation types
 - [x] Unit tests for link resolution (16 tests)
 
+#### Phase 2: Frontmatter Transformation
+- [x] Implement content property injection (transform wikilinks in property values)
+- [x] Implement passthrough property handling
+- [x] Filter out non-configured properties
+- [x] Unit tests for frontmatter transformation (21 tests)
+
 ### In Progress
 (None yet)
 
 ### Pending
-
-#### Phase 2: Frontmatter Transformation
-- [ ] Implement content property injection (transform wikilinks in property values)
-- [ ] Implement passthrough property handling
-- [ ] Filter out non-configured properties
-- [ ] Unit tests for frontmatter transformation (10+ tests)
 
 #### Phase 3: Obsidian Syntax Conversion
 - [ ] Convert callouts to blockquotes

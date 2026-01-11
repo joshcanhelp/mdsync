@@ -1,7 +1,9 @@
 import { readdir, readFile, writeFile, mkdir, unlink } from "node:fs/promises";
 import { join, dirname, basename, extname } from "node:path";
 import { scanSourceFiles } from "./scanner.js";
-import { buildLinkMap, transformWikilinks } from "./transformations/link-resolver.js";
+import { buildLinkMap } from "./transformations/link-resolver.js";
+import { transformFrontmatter } from "./transformations/frontmatter-transformer.js";
+import { parseFrontmatterFromString, stringifyFrontmatter } from "./frontmatter.js";
 import type { Config, SyncResult, SyncStatus } from "./types.js";
 
 export async function syncFiles(config: Config, verbose: boolean = false): Promise<SyncResult> {
@@ -32,23 +34,33 @@ export async function syncFiles(config: Config, verbose: boolean = false): Promi
     try {
       await mkdir(dirname(file.outputPath), { recursive: true });
 
-      // Read and transform file content
-      const content = await readFile(file.absolutePath, "utf-8");
-      const { content: transformedContent, unresolvedLinks } = transformWikilinks(
+      // Read file content
+      const fileContent = await readFile(file.absolutePath, "utf-8");
+      const { frontmatter, content } = parseFrontmatterFromString(fileContent);
+
+      // Transform frontmatter and content
+      const transformationResult = transformFrontmatter(
         content,
+        frontmatter,
         linkMap,
-        config.transformations.wikilinkBehavior || "resolve",
+        config,
         file.relativePath
       );
 
       // Track unresolved links
-      result.unresolvedLinksCount += unresolvedLinks.length;
+      result.unresolvedLinksCount += transformationResult.unresolvedLinks.length;
       if (verbose && result.unresolvedLinks) {
-        result.unresolvedLinks.push(...unresolvedLinks);
+        result.unresolvedLinks.push(...transformationResult.unresolvedLinks);
       }
 
+      // Build output with transformed frontmatter and content
+      const outputContent = stringifyFrontmatter(
+        transformationResult.frontmatter,
+        transformationResult.content
+      );
+
       // Write transformed content
-      await writeFile(file.outputPath, transformedContent, "utf-8");
+      await writeFile(file.outputPath, outputContent, "utf-8");
       result.copied++;
     } catch (error) {
       result.errors.push(new Error(`Failed to copy ${file.relativePath}: ${error}`));
