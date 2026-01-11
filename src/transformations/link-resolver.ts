@@ -55,7 +55,7 @@ export function transformWikilinks(
     const text = displayText ? displayText.trim() : trimmedTarget;
 
     // Try to find URL in link map
-    const url = linkMap[trimmedTarget];
+    const url = linkMap[trimmedTarget + ".md"];
 
     if (!url) {
       unresolvedLinks.push({
