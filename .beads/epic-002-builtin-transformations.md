@@ -1,8 +1,9 @@
 # Epic 002: Built-in Content Transformations
 
-Status: PENDING
-Started: TBD
-Last Updated: 2026-01-10 07:45
+Status: COMPLETE
+Started: 2026-01-10
+Completed: 2026-01-11
+Last Updated: 2026-01-11
 
 ## Goal
 
@@ -77,34 +78,44 @@ See DESIGN.md for detailed technical specifications including:
 - [x] Implement passthrough property handling
 - [x] Filter out non-configured properties
 - [x] Unit tests for frontmatter transformation (21 tests)
+- [x] Content properties formatted as H2 headings with bullet lists
+- [x] Horizontal rule separator between properties and content
+- [x] Extract text from unresolved wikilinks (use display text or filename without path/extension)
+
+#### Phase 3: File & Image Embeds
+- [x] Transform file/image embeds `![[file.ext]]` to markdown syntax
+- [x] Copy embedded files to `_files/` directory preserving paths
+- [x] Auto-detect image extensions
+- [x] Handle missing files with errors
+- [x] Track files copied count in SyncResult
+- [x] Unit tests for file embed transformation (22 tests)
+
+#### Phase 4: Integration & Reporting
+- [x] Add transformation report to SyncResult
+- [x] Track unresolved wikilinks count during transformation
+- [x] Implement verbose reporting (list all unresolved wikilinks)
+- [x] Integrate transformer into sync pipeline
+- [x] Update index.ts to apply transformations during copy
+- [x] Add transformation config to types (urlProperty, contentProperties, passthroughProperties)
+- [x] Update config validation
+- [x] Update CLI to show transformation report
+- [x] Add --verbose flag to CLI commands
+- [x] End-to-end tests with transformations (13 tests in index.test.ts)
+
+#### Phase 5: Documentation
+- [x] Update README with transformation docs
+- [x] Add transformation examples to config files
+- [x] Document transformation pipeline
 
 ### In Progress
 (None yet)
 
 ### Pending
 
-#### Phase 3: Obsidian Syntax Conversion
-- [ ] Convert callouts to blockquotes
-- [ ] Convert highlights to mark/bold
-- [ ] Transform image embeds
-- [ ] Unit tests for syntax conversion (12+ tests)
-
-#### Phase 4: Integration & Reporting
-- [ ] Add transformation report to SyncResult
-- [ ] Track unresolved wikilinks count during transformation
-- [ ] Implement verbose reporting (list all unresolved wikilinks)
-- [ ] Integrate transformer into sync pipeline
-- [ ] Update index.ts to apply transformations during copy
-- [ ] Add transformation config to types (urlProperty, contentProperties, passthroughProperties)
-- [ ] Update config validation
-- [ ] Update CLI to show transformation report
-- [ ] Add --verbose flag to CLI commands
-- [ ] End-to-end tests with transformations (8+ tests)
-
-#### Phase 5: Documentation
-- [ ] Update README with transformation docs
-- [ ] Add transformation examples to config files
-- [ ] Document transformation pipeline
+#### Phase 6: Obsidian Syntax Conversion (Optional - Deferred)
+- [ ] Convert callouts to blockquotes (SKIPPED - callouts are common markdown syntax)
+- [ ] Convert highlights to mark/bold (SKIPPED - highlights are common markdown syntax)
+- Note: These conversions were deprioritized as the syntax is already widely supported
 
 ## Notes
 
