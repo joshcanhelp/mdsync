@@ -31,4 +31,15 @@ module.exports = {
   // requireProps: {
   //   status: "published",
   // },
+
+  // Optional: transformation settings (if no repo config exists)
+  // transformations: {
+  //   urlProperty: "link_to",
+  //   contentProperties: ["tags"],
+  //   passthroughProperties: ["title"],
+  //   wikilinkBehavior: "resolve",
+  //   linkOverrides: {
+  //     "note.md": "https://example.com/note",
+  //   },
+  // },
 };

@@ -84,6 +84,23 @@ function mergeConfig(repoConfig: RepoConfig, userConfig: UserConfig | null): Con
   const requireTags = repoConfig.requireTags || userConfig?.requireTags || [];
   const requireProps = repoConfig.requireProps || userConfig?.requireProps || {};
 
+  // Merge transformation configs
+  const repoTransformations = repoConfig.transformations || {};
+  const userTransformations = userConfig?.transformations || {};
+  const transformations = {
+    urlProperty: repoTransformations.urlProperty || userTransformations.urlProperty || "link_to",
+    contentProperties:
+      repoTransformations.contentProperties || userTransformations.contentProperties || [],
+    passthroughProperties:
+      repoTransformations.passthroughProperties || userTransformations.passthroughProperties || [],
+    wikilinkBehavior:
+      repoTransformations.wikilinkBehavior || userTransformations.wikilinkBehavior || "resolve",
+    linkOverrides: {
+      ...(userTransformations.linkOverrides || {}),
+      ...(repoTransformations.linkOverrides || {}),
+    },
+  };
+
   return {
     userId,
     sourceDir: userConfig.sourceDir,
@@ -92,6 +109,7 @@ function mergeConfig(repoConfig: RepoConfig, userConfig: UserConfig | null): Con
     exclude,
     requireTags,
     requireProps,
+    transformations,
   };
 }
 

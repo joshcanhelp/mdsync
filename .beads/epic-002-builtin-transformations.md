@@ -64,19 +64,18 @@ See DESIGN.md for detailed technical specifications including:
 ## Tasks
 
 ### Completed
-(None yet)
+
+#### Phase 1: Link Resolution
+- [x] Create transformations module structure
+- [x] Implement link map builder
+- [x] Write wikilink parser/transformer
+- [x] Add transformation types
+- [x] Unit tests for link resolution (16 tests)
 
 ### In Progress
 (None yet)
 
 ### Pending
-
-#### Phase 1: Link Resolution
-- [ ] Create transformations module structure
-- [ ] Implement link map builder
-- [ ] Write wikilink parser/transformer
-- [ ] Add transformation types
-- [ ] Unit tests for link resolution (15+ tests)
 
 #### Phase 2: Frontmatter Transformation
 - [ ] Implement content property injection (transform wikilinks in property values)

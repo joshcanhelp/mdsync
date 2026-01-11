@@ -12,12 +12,15 @@ async function main() {
 markdown-sync - Sync markdown files with multi-user support
 
 Usage:
-  markdown-sync config        Show current configuration
-  markdown-sync scan          Scan source files and show what would be synced
-  markdown-sync status        Show what would change (dry-run)
-  markdown-sync sync          Sync files for real
-  markdown-sync clean         Remove all synced files for current user
-  markdown-sync help          Show this help message
+  markdown-sync config            Show current configuration
+  markdown-sync scan              Scan source files and show what would be synced
+  markdown-sync status            Show what would change (dry-run)
+  markdown-sync sync [--verbose]  Sync files with transformation
+  markdown-sync clean             Remove all synced files for current user
+  markdown-sync help              Show this help message
+
+Flags:
+  --verbose, -v   Show detailed transformation reports (e.g., all unresolved wikilinks)
 
 Config files:
   - .markdown-sync.user.js (required, in repo root or home directory)
@@ -106,11 +109,26 @@ Config files:
   if (command === "sync") {
     try {
       const config = await loadConfig();
+      const verbose = process.argv.includes("--verbose") || process.argv.includes("-v");
+
       console.log("Syncing files...\n");
-      const result = await syncFiles(config);
+      const result = await syncFiles(config, verbose);
 
       console.log(`✓ Copied: ${result.copied} file(s)`);
       console.log(`✓ Deleted: ${result.deleted} file(s)`);
+
+      if (result.unresolvedLinksCount > 0) {
+        console.log(`\nWikilinks: ${result.unresolvedLinksCount} unresolved`);
+
+        if (verbose && result.unresolvedLinks) {
+          console.log("\nUnresolved wikilinks:");
+          for (const link of result.unresolvedLinks) {
+            console.log(`  ${link.wikilink} in ${link.filePath}`);
+          }
+        } else if (result.unresolvedLinksCount > 0) {
+          console.log("  (use --verbose to see details)");
+        }
+      }
 
       if (result.errors.length > 0) {
         console.error(`\n⚠️  Errors encountered:`);

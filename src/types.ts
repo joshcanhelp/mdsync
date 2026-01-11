@@ -7,6 +7,20 @@ export interface Route {
   outputPath: string;
 }
 
+// Transformation configuration
+export interface TransformationConfig {
+  // Frontmatter property containing URLs for link resolution
+  urlProperty?: string;
+  // Properties to inject into content (with wikilink transformation)
+  contentProperties?: string[];
+  // Properties to copy unchanged to output frontmatter
+  passthroughProperties?: string[];
+  // How to handle wikilinks: "resolve", "remove", or "preserve"
+  wikilinkBehavior?: "resolve" | "remove" | "preserve";
+  // Override URLs for specific files
+  linkOverrides?: Record<string, string>;
+}
+
 // Repo-wide configuration (committed to version control)
 export interface RepoConfig {
   // Output directory relative to repo root
@@ -22,6 +36,8 @@ export interface RepoConfig {
   // Use "*" to require property exists with any value
   // Use array of strings to require property matches one of the values
   requireProps?: Record<string, string | string[]>;
+  // Transformation settings
+  transformations?: TransformationConfig;
 }
 
 // User-specific configuration (not committed)
@@ -38,6 +54,8 @@ export interface UserConfig {
   requireTags?: string[];
   // Optional required props
   requireProps?: Record<string, string | string[]>;
+  // Transformation settings
+  transformations?: TransformationConfig;
 }
 
 // Merged configuration with all required fields populated
@@ -49,6 +67,7 @@ export interface Config {
   exclude: string[];
   requireTags?: string[];
   requireProps?: Record<string, string | string[]>;
+  transformations: TransformationConfig;
 }
 
 // Information about a source file to be synced
@@ -75,6 +94,10 @@ export interface SyncResult {
   collisions: string[];
   // Any errors encountered
   errors: Error[];
+  // Number of unresolved wikilinks
+  unresolvedLinksCount: number;
+  // Unresolved wikilinks (when verbose)
+  unresolvedLinks?: Array<{ wikilink: string; filePath: string }>;
 }
 
 // Status information about what would change

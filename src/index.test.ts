@@ -5,6 +5,14 @@ import { join } from "node:path";
 import { syncFiles, getStatus, cleanFiles } from "./index.js";
 import type { Config } from "./types.js";
 
+const defaultTransformations = {
+  urlProperty: "link_to",
+  contentProperties: [],
+  passthroughProperties: [],
+  wikilinkBehavior: "resolve" as const,
+  linkOverrides: {},
+};
+
 describe("syncFiles", () => {
   let testDir: string;
   let sourceDir: string;
@@ -31,6 +39,7 @@ describe("syncFiles", () => {
       outputDir,
       routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
       exclude: [],
+      transformations: defaultTransformations,
     };
 
     const result = await syncFiles(config);
@@ -54,6 +63,7 @@ describe("syncFiles", () => {
       outputDir,
       routes: [{ sourcePath: "**/*.md", outputPath: "deep/nested/path" }],
       exclude: [],
+      transformations: defaultTransformations,
     };
 
     const result = await syncFiles(config);
@@ -73,6 +83,7 @@ describe("syncFiles", () => {
       outputDir,
       routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
       exclude: [],
+      transformations: defaultTransformations,
     };
 
     // First sync creates output file
@@ -101,6 +112,7 @@ describe("syncFiles", () => {
       outputDir,
       routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
       exclude: [],
+      transformations: defaultTransformations,
     };
 
     // Alice syncs her file
@@ -128,6 +140,7 @@ describe("syncFiles", () => {
       outputDir,
       routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
       exclude: [],
+      transformations: defaultTransformations,
     };
 
     // Create existing file from another user with same base name
@@ -160,6 +173,7 @@ tags:
         { tag: "work", outputPath: "projects" },
       ],
       exclude: [],
+      transformations: defaultTransformations,
     };
 
     const result = await syncFiles(config);
@@ -182,6 +196,7 @@ tags:
       outputDir: "/invalid/readonly/path",
       routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
       exclude: [],
+      transformations: defaultTransformations,
     };
 
     const result = await syncFiles(config);
@@ -217,6 +232,7 @@ describe("getStatus", () => {
       outputDir,
       routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
       exclude: [],
+      transformations: defaultTransformations,
     };
 
     const status = await getStatus(config);
@@ -236,6 +252,7 @@ describe("getStatus", () => {
       outputDir,
       routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
       exclude: [],
+      transformations: defaultTransformations,
     };
 
     // Create orphaned file
@@ -260,6 +277,7 @@ describe("getStatus", () => {
       outputDir,
       routes: [{ sourcePath: "**/*.md", outputPath: "notes" }],
       exclude: [],
+      transformations: defaultTransformations,
     };
 
     // Create collision
@@ -299,6 +317,7 @@ describe("cleanFiles", () => {
       outputDir,
       routes: [],
       exclude: [],
+      transformations: defaultTransformations,
     };
 
     const deleted = await cleanFiles(config);
@@ -320,6 +339,7 @@ describe("cleanFiles", () => {
       outputDir,
       routes: [],
       exclude: [],
+      transformations: defaultTransformations,
     };
 
     const deleted = await cleanFiles(config);
@@ -336,6 +356,7 @@ describe("cleanFiles", () => {
       outputDir: join(testDir, "nonexistent"),
       routes: [],
       exclude: [],
+      transformations: defaultTransformations,
     };
 
     const deleted = await cleanFiles(config);

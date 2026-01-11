@@ -7,6 +7,7 @@ Sync markdown files from personal note directories into a shared repository with
 - Multi-user support with automatic user ID detection
 - Configurable routing based on folder paths and frontmatter tags
 - Filter files by required tags and frontmatter properties
+- Built-in content transformations (wikilink resolution, frontmatter handling)
 - Stateless operation - no manifest files
 - Collision detection prevents conflicts
 - Orphaned file cleanup
@@ -38,6 +39,7 @@ Optional fields:
 - `exclude` - Patterns to exclude
 - `requireTags` - Required frontmatter tags
 - `requireProps` - Required frontmatter properties
+- `transformations` - Content transformation settings
 
 ### Repo Config (optional)
 
@@ -53,6 +55,7 @@ Optional fields:
 - `exclude` - Patterns to exclude from syncing
 - `requireTags` - Files must have ALL these tags
 - `requireProps` - Files must have matching property values
+- `transformations` - Content transformation settings
 
 ## User ID Detection
 
@@ -107,6 +110,50 @@ requireProps: {
   title: "*",                        // must exist with any value
   references: "[[Technology/Pub"     // must contain this substring
 }
+```
+
+## Transformations
+
+Content transformations are applied during sync to modify files before writing them to the output directory.
+
+### Wikilink Resolution
+
+Wikilinks (`[[internal-link]]`) are transformed based on frontmatter URL properties:
+
+```
+[[note.md]] → [note.md](https://example.com/note)
+[[note.md|Display Text]] → [Display Text](https://example.com/note)
+```
+
+Configure behavior in [markdown-sync.config.example.js](markdown-sync.config.example.js):
+
+- `urlProperty` - Frontmatter property containing the URL (default: `"link_to"`)
+- `wikilinkBehavior` - How to handle wikilinks:
+  - `"resolve"` (default) - Convert to markdown links, keep unresolved as wikilinks
+  - `"remove"` - Remove wikilinks that can't be resolved
+  - `"preserve"` - Keep all wikilinks unchanged
+- `linkOverrides` - Manual URL mappings for specific files
+
+### Frontmatter Handling
+
+Control which frontmatter properties appear in synced files:
+
+- `contentProperties` - Injected into file content (removed from frontmatter)
+- `passthroughProperties` - Kept in frontmatter unchanged
+- Properties not listed in either are omitted from output
+
+See [markdown-sync.config.example.js](markdown-sync.config.example.js) for configuration examples.
+
+### Transformation Reporting
+
+Sync command shows unresolved wikilinks:
+
+```bash
+npm run mdsync sync
+# Output shows: Wikilinks: 3 unresolved
+
+npm run mdsync sync --verbose
+# Shows each unresolved wikilink and its location
 ```
 
 ## Commands

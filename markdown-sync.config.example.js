@@ -37,4 +37,29 @@ module.exports = {
     title: "*", // must exist with any value
     references: "[[Technology/Publishing", // must contain this substring
   },
+
+  // Optional: transformation settings
+  transformations: {
+    // Frontmatter property containing URL for wikilink resolution (default: "link_to")
+    urlProperty: "link_to",
+
+    // Properties to inject into file content (removed from frontmatter)
+    contentProperties: ["tags", "created"],
+
+    // Properties to keep in frontmatter (passed through unchanged)
+    passthroughProperties: ["title", "author"],
+
+    // Properties not listed above are omitted from output
+
+    // Wikilink transformation behavior (default: "resolve")
+    // - "resolve": convert [[link]] to [link](url), keep if no URL found
+    // - "remove": remove wikilinks that can't be resolved
+    // - "preserve": keep all wikilinks unchanged
+    wikilinkBehavior: "resolve",
+
+    // Override specific links (useful for external references)
+    linkOverrides: {
+      "external-note.md": "https://example.com/external",
+    },
+  },
 };

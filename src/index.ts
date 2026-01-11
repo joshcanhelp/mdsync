@@ -1,15 +1,19 @@
-import { readdir, copyFile, mkdir, unlink } from "node:fs/promises";
+import { readdir, readFile, writeFile, mkdir, unlink } from "node:fs/promises";
 import { join, dirname, basename, extname } from "node:path";
 import { scanSourceFiles } from "./scanner.js";
+import { buildLinkMap, transformWikilinks } from "./transformations/link-resolver.js";
 import type { Config, SyncResult, SyncStatus } from "./types.js";
+import type { UnresolvedLink } from "./transformations/types.js";
 
-export async function syncFiles(config: Config): Promise<SyncResult> {
+export async function syncFiles(config: Config, verbose: boolean = false): Promise<SyncResult> {
   const sourceFiles = await scanSourceFiles(config);
   const result: SyncResult = {
     copied: 0,
     deleted: 0,
     collisions: [],
     errors: [],
+    unresolvedLinksCount: 0,
+    unresolvedLinks: verbose ? [] : undefined,
   };
 
   // Check for collisions with other users
@@ -21,11 +25,31 @@ export async function syncFiles(config: Config): Promise<SyncResult> {
     );
   }
 
-  // Copy source files to output locations
+  // Build link map for wikilink transformation
+  const linkMap = await buildLinkMap(config);
+
+  // Transform and copy source files to output locations
   for (const file of sourceFiles) {
     try {
       await mkdir(dirname(file.outputPath), { recursive: true });
-      await copyFile(file.absolutePath, file.outputPath);
+
+      // Read and transform file content
+      const content = await readFile(file.absolutePath, "utf-8");
+      const { content: transformedContent, unresolvedLinks } = transformWikilinks(
+        content,
+        linkMap,
+        config.transformations.wikilinkBehavior || "resolve",
+        file.relativePath
+      );
+
+      // Track unresolved links
+      result.unresolvedLinksCount += unresolvedLinks.length;
+      if (verbose && result.unresolvedLinks) {
+        result.unresolvedLinks.push(...unresolvedLinks);
+      }
+
+      // Write transformed content
+      await writeFile(file.outputPath, transformedContent, "utf-8");
       result.copied++;
     } catch (error) {
       result.errors.push(new Error(`Failed to copy ${file.relativePath}: ${error}`));
