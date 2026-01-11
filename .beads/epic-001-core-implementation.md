@@ -23,12 +23,8 @@ Build the core markdown-sync npm module with multi-user support and configurable
 - [x] Required frontmatter validation (requireTags, requireProps with value matching)
 - [x] File syncing with collision detection (index.ts + 13 tests)
 - [x] Orphaned file cleanup (integrated in index.ts)
-
-### In Progress
-- [ ] **NEXT**: End-to-end testing with real files
-
-### Pending
-- [ ] README documentation
+- [x] End-to-end testing with real files
+- [x] README documentation
 
 ## Current State
 - Build: ✅ Passing

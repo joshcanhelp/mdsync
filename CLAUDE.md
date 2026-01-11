@@ -49,6 +49,7 @@ Follow this checklist **in order** after implementing or modifying code:
 - User config (`.markdown-sync.user.js`) - personal settings, not committed
 - Repo config (`markdown-sync.config.js`) - shared settings, optional (has defaults)
 - No `outputDir` in user config - that's repo-only
+- If the generic term "config" is used, that means both but clarify if there is ambiguity
 
 ### File Operations
 
