@@ -1,4 +1,4 @@
-# markdown-sync
+# mdsync
 
 Sync markdown files from personal note directories into a shared repository with multi-user support. Each user's files are identified by their user ID embedded in the filename, allowing multiple people to sync notes into the same repository without conflicts.
 
@@ -8,10 +8,8 @@ Sync markdown files from personal note directories into a shared repository with
 - Configurable routing based on folder paths and frontmatter tags
 - Filter files by required tags and frontmatter properties
 - Built-in content transformations (wikilink resolution, frontmatter handling)
-- Stateless operation - no manifest files
 - Collision detection prevents conflicts
 - Orphaned file cleanup
-- Read-only source directory - never modifies your notes
 
 ## Installation
 
