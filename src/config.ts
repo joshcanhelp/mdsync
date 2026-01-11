@@ -139,7 +139,7 @@ async function validateConfig(config: Config, repoRoot: string): Promise<void> {
     } catch {
       try {
         await mkdir(outputPath, { recursive: true });
-      } catch (error) {
+      } catch (_error) {
         errors.push(`Output directory not writable and cannot be created: ${config.outputDir}`);
       }
     }

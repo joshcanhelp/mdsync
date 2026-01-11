@@ -24,16 +24,20 @@ Follow this checklist **in order** after implementing or modifying code:
    - Run `npm test` to execute all tests
    - All tests must pass - fix failures before proceeding
 
-4. **Format Code**
+4. **Lint Code**
+   - Run `npm run lint` to check TypeScript types and ESLint rules
+   - Fix all linting errors before proceeding
+
+5. **Format Code**
    - Run `npm run format` to apply prettier formatting
    - Commit formatted code only
 
-5. **Update Documentation**
+6. **Update Documentation**
    - Update `DESIGN.md` if architecture changed
    - Update `CLAUDE.md` if workflow/conventions changed
    - Update examples if config structure changed
 
-6. **Update .beads**
+7. **Update .beads**
    - Mark completed tasks in `.beads/epic-*.md`
    - Update status and notes
    - Commit `.beads` changes

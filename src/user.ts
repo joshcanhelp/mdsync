@@ -2,7 +2,7 @@
  * User ID detection and resolution
  */
 
-import { readFile } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { homedir } from "node:os";
 
@@ -42,11 +42,6 @@ function readGitConfig(): string | null {
   } catch {
     return null;
   }
-}
-
-function readFileSync(path: string, encoding: string): string {
-  const fs = require("node:fs");
-  return fs.readFileSync(path, encoding);
 }
 
 export function sanitizeUserId(userId: string): string {

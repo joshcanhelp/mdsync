@@ -1,5 +1,6 @@
 import { readdir } from "node:fs/promises";
 import { join, relative } from "node:path";
+import { minimatch } from "minimatch";
 import { parseFrontmatter } from "../frontmatter.js";
 import type { Config } from "../types.js";
 import type { LinkMap, UnresolvedLink } from "./types.js";
@@ -87,7 +88,7 @@ async function findAllMarkdownFiles(dir: string): Promise<string[]> {
         files.push(fullPath);
       }
     }
-  } catch (error) {
+  } catch (_error) {
     // Ignore directories we can't read
   }
 
@@ -98,8 +99,6 @@ function shouldExclude(relativePath: string, excludePatterns: string[]): boolean
   if (excludePatterns.length === 0) {
     return false;
   }
-
-  const { minimatch } = require("minimatch");
 
   return excludePatterns.some((pattern) => minimatch(relativePath, pattern));
 }

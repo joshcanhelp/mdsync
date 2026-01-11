@@ -1,5 +1,6 @@
 import { readdir } from "node:fs/promises";
 import { join, relative, basename, extname } from "node:path";
+import { minimatch } from "minimatch";
 import { parseFrontmatter, type FrontmatterData } from "./frontmatter.js";
 import { matchRoute } from "./routing.js";
 import type { Config, SourceFile } from "./types.js";
@@ -70,8 +71,6 @@ function filterExcluded(files: string[], sourceDir: string, exclude: string[]): 
   if (exclude.length === 0) {
     return files;
   }
-
-  const { minimatch } = require("minimatch");
 
   return files.filter((file) => {
     const relativePath = relative(sourceDir, file);

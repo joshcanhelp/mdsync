@@ -3,7 +3,6 @@ import { join, dirname, basename, extname } from "node:path";
 import { scanSourceFiles } from "./scanner.js";
 import { buildLinkMap, transformWikilinks } from "./transformations/link-resolver.js";
 import type { Config, SyncResult, SyncStatus } from "./types.js";
-import type { UnresolvedLink } from "./transformations/types.js";
 
 export async function syncFiles(config: Config, verbose: boolean = false): Promise<SyncResult> {
   const sourceFiles = await scanSourceFiles(config);
@@ -93,7 +92,7 @@ export async function cleanFiles(config: Config): Promise<number> {
     try {
       await unlink(file);
       deleted++;
-    } catch (error) {
+    } catch (_error) {
       // Ignore errors during cleanup
     }
   }
@@ -133,7 +132,7 @@ async function detectCollisions(
           break;
         }
       }
-    } catch (error) {
+    } catch (_error) {
       // Directory doesn't exist yet, no collision possible
     }
   }
@@ -167,7 +166,7 @@ async function findUserFiles(dir: string, userId: string): Promise<string[]> {
         files.push(fullPath);
       }
     }
-  } catch (error) {
+  } catch (_error) {
     // Directory doesn't exist, no files to return
   }
 
