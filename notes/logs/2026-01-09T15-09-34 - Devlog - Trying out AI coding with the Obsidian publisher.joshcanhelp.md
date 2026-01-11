@@ -7,6 +7,8 @@ tags:
 - [CHOP](https://sourcegraph.com/blog/chat-oriented-programming-in-action)
 - [Publishing Obsidian notes](https://github.com/joshcanhelp/md-note-mapper)
 
+---
+
 First, I had [Claude](https://claude.ai) parse this HN thread:
 https://news.ycombinator.com/item?id=46515696
 

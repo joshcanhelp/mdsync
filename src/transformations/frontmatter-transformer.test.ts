@@ -44,7 +44,7 @@ describe("transformFrontmatter", () => {
         "test.md"
       );
 
-      expect(result.content).toBe("## Tags\n\n- important\n- notes\n\nMain content here.");
+      expect(result.content).toBe("## Tags\n\n- important\n- notes\n\n---\n\nMain content here.");
       expect(result.frontmatter).toEqual({ title: "My Title" });
     });
 
@@ -64,7 +64,7 @@ describe("transformFrontmatter", () => {
       );
 
       expect(result.content).toBe(
-        "## Tags\n\n- #tech\n- #programming\n- #typescript\n\nMain content."
+        "## Tags\n\n- #tech\n- #programming\n- #typescript\n\n---\n\nMain content."
       );
       expect(result.frontmatter).toEqual({ title: "My Title" });
     });
@@ -85,7 +85,7 @@ describe("transformFrontmatter", () => {
       );
 
       expect(result.content).toBe(
-        "## References\n\n- See [file1.md](https://example.com/file1) and [file2.md](https://example.com/file2)\n\nContent."
+        "## References\n\n- See [file1.md](https://example.com/file1) and [file2.md](https://example.com/file2)\n\n---\n\nContent."
       );
     });
 
@@ -123,7 +123,7 @@ describe("transformFrontmatter", () => {
       );
 
       expect(result.content).toBe(
-        "## Tags\n\n- #tag1\n- #tag2\n\n## Created\n\n- 2024-01-01\n\nContent"
+        "## Tags\n\n- #tag1\n- #tag2\n\n## Created\n\n- 2024-01-01\n\n---\n\nContent"
       );
       expect(result.frontmatter).toEqual({ title: "Title" });
     });
@@ -228,7 +228,7 @@ describe("transformFrontmatter", () => {
       );
 
       expect(result.frontmatter).toEqual({ title: "Keep" });
-      expect(result.content).toBe("## Tags\n\n- Inject\n\nContent");
+      expect(result.content).toBe("## Tags\n\n- Inject\n\n---\n\nContent");
     });
 
     it("should handle empty configuration lists", () => {
@@ -305,7 +305,7 @@ describe("transformFrontmatter", () => {
       );
 
       // Content properties extract text from unresolved wikilinks, main content respects wikilinkBehavior
-      expect(result.content).toBe("## References\n\n- missing.md\n\n");
+      expect(result.content).toBe("## References\n\n- missing.md\n\n---\n\n");
       expect(result.unresolvedLinks).toHaveLength(2);
     });
 
@@ -325,7 +325,7 @@ describe("transformFrontmatter", () => {
 
       // Content properties get resolved and formatted, main content preserved
       expect(result.content).toBe(
-        "## References\n\n- [file1.md](https://example.com/file1)\n\n[[file1.md]]"
+        "## References\n\n- [file1.md](https://example.com/file1)\n\n---\n\n[[file1.md]]"
       );
       expect(result.unresolvedLinks).toHaveLength(0);
     });
@@ -380,7 +380,7 @@ describe("transformFrontmatter", () => {
         "test.md"
       );
 
-      expect(result.content).toBe("## Count\n\n- 42\n\n## Enabled\n\n- true\n\nContent");
+      expect(result.content).toBe("## Count\n\n- 42\n\n## Enabled\n\n- true\n\n---\n\nContent");
     });
 
     it("should handle object content properties", () => {
@@ -396,7 +396,7 @@ describe("transformFrontmatter", () => {
         "test.md"
       );
 
-      expect(result.content).toBe('## Metadata\n\n- {"foo":"bar","baz":123}\n\nContent');
+      expect(result.content).toBe('## Metadata\n\n- {"foo":"bar","baz":123}\n\n---\n\nContent');
     });
   });
 });
