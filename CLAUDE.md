@@ -35,12 +35,15 @@ Follow this checklist **in order** after implementing or modifying code:
 6. **Update Documentation**
    - Update `DESIGN.md` if architecture changed
    - Update `CLAUDE.md` if workflow/conventions changed
+   - Update `README.md` if user-facing tasks have changed
    - Update examples if config structure changed
 
-7. **Update .beads**
-   - Mark completed tasks in `.beads/epic-*.md`
-   - Update status and notes
-   - Commit `.beads` changes
+7. **Task management**
+   - See `.beads/AGENTS.md` for beads workflow
+   - Run `bd prime` for current workflow context
+   - Use `bd create` for strategic work (multi-session, dependencies, discovered issues)
+   - Use `TodoWrite` tool for simple single-session task tracking
+   - When in doubt, prefer bd—persistent tracking beats lost context
 
 ### Code Style
 
@@ -64,14 +67,6 @@ Follow this checklist **in order** after implementing or modifying code:
 - Output files use format: `filename.userid.ext`
 - Collision = error (two users, same output path)
 
-## Task Management
-
-See `.beads/` directory for current task state and progress tracking.
-
 ## Testing During Development
 
 Run CLI with: `npx tsx src/cli.ts [command]`
-
-## Additional Notes
-
-Add project-specific instructions here as needed.
