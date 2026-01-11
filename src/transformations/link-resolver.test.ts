@@ -220,13 +220,13 @@ describe("transformWikilinks", () => {
     expect(result.unresolvedLinks[1].wikilink).toBe("[[another.md|text]]");
   });
 
-  it("should preserve unresolved wikilinks when behavior is resolve (default)", () => {
+  it("should extract text from unresolved wikilinks when behavior is resolve", () => {
     const content = "Check [[missing.md]] here.";
     const linkMap: LinkMap = {};
 
     const result = transformWikilinks(content, linkMap, "resolve", "test.md");
 
-    expect(result.content).toBe("Check [[missing.md]] here.");
+    expect(result.content).toBe("Check missing here.");
     expect(result.unresolvedLinks).toHaveLength(1);
   });
 
@@ -288,5 +288,49 @@ describe("transformWikilinks", () => {
     const result = transformWikilinks(content, linkMap, "resolve", "test.md");
 
     expect(result.content).toBe("See [nested/deep/file.md](https://example.com/nested) here.");
+  });
+
+  it("should extract display text from unresolved wikilinks with custom text", () => {
+    const content = "Check [[missing.md|Custom Text]] here.";
+    const linkMap: LinkMap = {};
+
+    const result = transformWikilinks(content, linkMap, "resolve", "test.md");
+
+    expect(result.content).toBe("Check Custom Text here.");
+    expect(result.unresolvedLinks).toHaveLength(1);
+  });
+
+  it("should extract filename from unresolved wikilinks with paths", () => {
+    const content = "See [[folder/subfolder/note.md]] here.";
+    const linkMap: LinkMap = {};
+
+    const result = transformWikilinks(content, linkMap, "resolve", "test.md");
+
+    expect(result.content).toBe("See note here.");
+    expect(result.unresolvedLinks).toHaveLength(1);
+  });
+
+  it("should extract filename without extension for unresolved wikilinks", () => {
+    const content = "Check [[simple-note.md]] and [[another]] here.";
+    const linkMap: LinkMap = {};
+
+    const result = transformWikilinks(content, linkMap, "resolve", "test.md");
+
+    expect(result.content).toBe("Check simple-note and another here.");
+    expect(result.unresolvedLinks).toHaveLength(2);
+  });
+
+  it("should handle mixed resolved and unresolved wikilinks", () => {
+    const content = "See [[file1.md]] and [[missing.md]] and [[file2.md|Custom]].";
+    const linkMap: LinkMap = {
+      "file1.md": "https://example.com/file1",
+    };
+
+    const result = transformWikilinks(content, linkMap, "resolve", "test.md");
+
+    expect(result.content).toBe(
+      "See [file1.md](https://example.com/file1) and missing and Custom."
+    );
+    expect(result.unresolvedLinks).toHaveLength(2);
   });
 });

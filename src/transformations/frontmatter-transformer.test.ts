@@ -305,7 +305,7 @@ describe("transformFrontmatter", () => {
       );
 
       // Content properties extract text from unresolved wikilinks, main content respects wikilinkBehavior
-      expect(result.content).toBe("## References\n\n- missing.md\n\n---\n\n");
+      expect(result.content).toBe("## References\n\n- missing\n\n---\n\n");
       expect(result.unresolvedLinks).toHaveLength(2);
     });
 
