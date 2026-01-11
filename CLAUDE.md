@@ -47,6 +47,8 @@ Follow this checklist **in order** after implementing or modifying code:
 - Use `//` for single-line comments, not `/** */`
 - Minimize comments - code should be self-documenting
 - One module at a time - complete workflow before moving on
+- Use guard clauses to return/break/continue early
+- Bias towards more clear variable names rather than short ones
 
 ### Configuration
 
