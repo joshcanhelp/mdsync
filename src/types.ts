@@ -7,6 +7,18 @@ export interface Route {
   outputPath: string;
 }
 
+// Context passed to custom transform functions
+export interface TransformContext {
+  filePath: string;
+  frontmatter: Record<string, unknown>;
+}
+
+// Custom transformer function type
+export type TransformFunction = (
+  value: string,
+  context: TransformContext
+) => string | Promise<string>;
+
 // Transformation configuration
 export interface TransformationConfig {
   // Frontmatter property containing URLs for link resolution
@@ -19,6 +31,10 @@ export interface TransformationConfig {
   wikilinkBehavior?: "resolve" | "remove" | "preserve";
   // Override URLs for specific files
   linkOverrides?: Record<string, string>;
+  // Custom transformers for specific frontmatter properties
+  propertyTransforms?: Record<string, TransformFunction>;
+  // Custom transformer for main content
+  contentTransform?: TransformFunction;
 }
 
 // Repo-wide configuration (committed to version control)

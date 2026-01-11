@@ -41,7 +41,7 @@ export async function syncFiles(config: Config, verbose: boolean = false): Promi
       const { frontmatter, content } = parseFrontmatterFromString(fileContent);
 
       // Transform frontmatter and content
-      const transformationResult = transformFrontmatter(
+      const transformationResult = await transformFrontmatter(
         content,
         frontmatter,
         linkMap,

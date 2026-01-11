@@ -61,5 +61,37 @@ module.exports = {
     linkOverrides: {
       "external-note.md": "https://example.com/external",
     },
+
+    // Custom transformations for frontmatter properties
+    // Only applies to passthroughProperties, receives string values only
+    propertyTransforms: {
+      // Uppercase the title
+      title: (value) => value.toUpperCase(),
+
+      // Capitalize author name
+      author: (value) =>
+        value
+          .split(" ")
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(" "),
+
+      // Transform with context
+      modified: (value, context) => {
+        // Access file path and frontmatter
+        console.log(`Transforming ${context.filePath}`);
+        return new Date(value).toISOString();
+      },
+    },
+
+    // Custom transformation for main content
+    // Applied after all built-in transformations
+    contentTransform: (content, context) => {
+      // Example: add header based on frontmatter
+      const author = context.frontmatter.author;
+      if (author) {
+        return `> Author: ${author}\n\n${content}`;
+      }
+      return content;
+    },
   },
 };

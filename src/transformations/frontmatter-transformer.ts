@@ -2,13 +2,13 @@ import { transformWikilinks } from "./link-resolver.js";
 import type { Config } from "../types.js";
 import type { LinkMap, UnresolvedLink, TransformationResult } from "./types.js";
 
-export function transformFrontmatter(
+export async function transformFrontmatter(
   content: string,
   frontmatter: Record<string, unknown>,
   linkMap: LinkMap,
   config: Config,
   currentFilePath: string
-): TransformationResult {
+): Promise<TransformationResult> {
   const unresolvedLinks: UnresolvedLink[] = [];
   let transformedContent = content;
 
@@ -63,11 +63,35 @@ export function transformFrontmatter(
       contentPropertiesToInject.join("\n\n") + "\n\n---\n\n" + transformedContent;
   }
 
+  // Apply custom content transform if defined
+  const contentTransform = config.transformations.contentTransform;
+  if (contentTransform) {
+    const transformContext = {
+      filePath: currentFilePath,
+      frontmatter,
+    };
+    transformedContent = await contentTransform(transformedContent, transformContext);
+  }
+
   // Build output frontmatter with only passthrough properties
   const outputFrontmatter: Record<string, unknown> = {};
+  const propertyTransforms = config.transformations.propertyTransforms || {};
+  const transformContext = {
+    filePath: currentFilePath,
+    frontmatter,
+  };
+
   for (const prop of passthroughProperties) {
     if (prop in frontmatter) {
-      outputFrontmatter[prop] = frontmatter[prop];
+      let value = frontmatter[prop];
+
+      // Apply custom transform if defined for this property
+      if (prop in propertyTransforms && typeof value === "string") {
+        const transformer = propertyTransforms[prop];
+        value = await transformer(value, transformContext);
+      }
+
+      outputFrontmatter[prop] = value;
     }
   }
 
