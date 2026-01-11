@@ -98,6 +98,8 @@ export interface SyncResult {
   unresolvedLinksCount: number;
   // Unresolved wikilinks (when verbose)
   unresolvedLinks?: Array<{ wikilink: string; filePath: string }>;
+  // Number of files copied to _files directory
+  filesCopied: number;
 }
 
 // Status information about what would change
@@ -108,4 +110,19 @@ export interface SyncStatus {
   toDelete: string[];
   // Potential collisions
   collisions: string[];
+}
+
+// File embed information
+export interface FileEmbed {
+  originalSyntax: string;
+  filename: string;
+  isImage: boolean;
+  displayText?: string;
+}
+
+// Result of file embed transformation
+export interface FileEmbedResult {
+  content: string;
+  copiedFiles: string[];
+  errors: Error[];
 }

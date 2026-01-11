@@ -59,7 +59,7 @@ export function transformFrontmatter(
 
   // Inject content properties at the beginning (after transformation)
   if (contentPropertiesToInject.length > 0) {
-    transformedContent = transformedContent + "\n\n" + contentPropertiesToInject.join("\n\n");
+    transformedContent = contentPropertiesToInject.join("\n\n") + "\n\n" + transformedContent;
   }
 
   // Build output frontmatter with only passthrough properties

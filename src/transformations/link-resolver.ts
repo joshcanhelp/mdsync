@@ -55,7 +55,9 @@ export function transformWikilinks(
     const text = displayText ? displayText.trim() : trimmedTarget;
 
     // Try to find URL in link map
-    const url = linkMap[trimmedTarget + ".md"];
+    // Add .md extension if not already present
+    const lookupKey = trimmedTarget.endsWith(".md") ? trimmedTarget : trimmedTarget + ".md";
+    const url = linkMap[lookupKey];
 
     if (!url) {
       unresolvedLinks.push({

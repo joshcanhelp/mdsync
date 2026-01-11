@@ -116,6 +116,9 @@ Config files:
 
       console.log(`✓ Copied: ${result.copied} file(s)`);
       console.log(`✓ Deleted: ${result.deleted} file(s)`);
+      if (result.filesCopied > 0) {
+        console.log(`✓ Files copied to _files/: ${result.filesCopied}`);
+      }
 
       if (result.unresolvedLinksCount > 0) {
         console.log(`\nWikilinks: ${result.unresolvedLinksCount} unresolved`);

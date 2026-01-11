@@ -2,6 +2,11 @@
 tags:
   - artifact/devlog
 ---
+## References
+
+- [CHOP](https://sourcegraph.com/blog/chat-oriented-programming-in-action)
+- [Publishing Obsidian notes](https://github.com/joshcanhelp/md-note-mapper)
+
 First, I had [Claude](https://claude.ai) parse this HN thread:
 https://news.ycombinator.com/item?id=46515696
 
@@ -37,8 +42,3 @@ First bug just happened and Claude is struggling. Next one I'll try to debug on 
 Had to dive in on a problem with string matching (more about requirements than broken functionality) and had no problem finding and fixing the issue!
 
 If you're seeing this note, the sync works!
-
-## References
-
-- [CHOP](https://sourcegraph.com/blog/chat-oriented-programming-in-action)
-- [Publishing Obsidian notes](https://github.com/joshcanhelp/md-note-mapper)

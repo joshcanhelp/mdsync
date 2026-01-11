@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "test": "vitest",
+    "test": "vitest run",
     "lint": "tsc --noEmit && eslint src",
     "format": "prettier --write \"src/**/*.ts\"",
     "pre-commit": "npm run format && npm run lint && npm run test",

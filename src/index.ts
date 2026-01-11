@@ -3,6 +3,7 @@ import { join, dirname, basename, extname } from "node:path";
 import { scanSourceFiles } from "./scanner.js";
 import { buildLinkMap } from "./transformations/link-resolver.js";
 import { transformFrontmatter } from "./transformations/frontmatter-transformer.js";
+import { transformFileEmbeds } from "./transformations/file-embed-transformer.js";
 import { parseFrontmatterFromString, stringifyFrontmatter } from "./frontmatter.js";
 import type { Config, SyncResult, SyncStatus } from "./types.js";
 
@@ -15,6 +16,7 @@ export async function syncFiles(config: Config, verbose: boolean = false): Promi
     errors: [],
     unresolvedLinksCount: 0,
     unresolvedLinks: verbose ? [] : undefined,
+    filesCopied: 0,
   };
 
   // Check for collisions with other users
@@ -47,6 +49,22 @@ export async function syncFiles(config: Config, verbose: boolean = false): Promi
         file.relativePath
       );
 
+      // Transform file embeds in main content
+      const fileEmbedResult = await transformFileEmbeds(
+        transformationResult.content,
+        config.sourceDir,
+        config.outputDir
+      );
+
+      // Check for file embed errors (missing files stop sync)
+      if (fileEmbedResult.errors.length > 0) {
+        result.errors.push(...fileEmbedResult.errors);
+        throw new Error(`File embed errors in ${file.relativePath}. Stopping sync.`);
+      }
+
+      // Track copied files
+      result.filesCopied += fileEmbedResult.copiedFiles.length;
+
       // Track unresolved links
       result.unresolvedLinksCount += transformationResult.unresolvedLinks.length;
       if (verbose && result.unresolvedLinks) {
@@ -56,7 +74,7 @@ export async function syncFiles(config: Config, verbose: boolean = false): Promi
       // Build output with transformed frontmatter and content
       const outputContent = stringifyFrontmatter(
         transformationResult.frontmatter,
-        transformationResult.content
+        fileEmbedResult.content
       );
 
       // Write transformed content
