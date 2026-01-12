@@ -38,12 +38,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/joshcanhelp/markdown-sync.git"
+    "url": "https://github.com/joshcanhelp/mdsync.git"
   },
   "bugs": {
-    "url": "https://github.com/joshcanhelp/markdown-sync/issues"
+    "url": "https://github.com/joshcanhelp/mdsync/issues"
   },
-  "homepage": "https://github.com/joshcanhelp/markdown-sync#readme",
+  "homepage": "https://github.com/joshcanhelp/mdsync#readme",
   "devDependencies": {
     "@eslint/js": "^9.39.2",
     "@tsconfig/node24": "^24.0.3",
