@@ -88,7 +88,7 @@ git push origin "v${VERSION}"
 
 # Publish to npm
 print_info "Publishing to npm..."
-npm publish
+npm publish --access=public
 
 # Create GitHub release
 print_info "Creating GitHub release..."
