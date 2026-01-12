@@ -1,7 +1,3 @@
----
-tags:
-  - artifact/devlog
----
 ## References
 
 - [CHOP](https://sourcegraph.com/blog/chat-oriented-programming-in-action)

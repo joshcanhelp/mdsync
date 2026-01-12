@@ -13,8 +13,14 @@ export interface TransformContext {
   frontmatter: Record<string, unknown>;
 }
 
-// Custom transformer function type
-export type TransformFunction = (
+// Custom transformer function type for frontmatter properties
+export type PropertyTransformFunction = (
+  value: string | string[],
+  context: TransformContext
+) => string | string[] | Promise<string | string[]>;
+
+// Custom transformer function type for content
+export type ContentTransformFunction = (
   value: string,
   context: TransformContext
 ) => string | Promise<string>;
@@ -32,9 +38,9 @@ export interface TransformationConfig {
   // Override URLs for specific files
   linkOverrides?: Record<string, string>;
   // Custom transformers for specific frontmatter properties
-  propertyTransforms?: Record<string, TransformFunction>;
+  propertyTransforms?: Record<string, PropertyTransformFunction>;
   // Custom transformer for main content
-  contentTransform?: TransformFunction;
+  contentTransform?: ContentTransformFunction;
 }
 
 // Repo-wide configuration (committed to version control)

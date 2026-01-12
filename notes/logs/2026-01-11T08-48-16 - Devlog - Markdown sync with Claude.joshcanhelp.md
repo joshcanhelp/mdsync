@@ -1,7 +1,3 @@
----
-tags:
-  - artifact/devlog
----
 ## References
 
 - [CHOP](https://sourcegraph.com/blog/chat-oriented-programming-in-action)
@@ -23,4 +19,12 @@ Back on track and it's working well. I'm still quite uncomfortable with the fact
 
 I will say that the code is written in a really clear and modular way, which helps a lot. Clarity of output feels really important if this is going to become long-term maintained code. Short, testable functions, long and clear variable names, modularity. All the stuff the industry has been harping on for clarity but now the AI is making that easier and more consistent.
 
-In the end, a lot of the discomfort here is the general discomfort that comes with building software. The feeling I have when I dig into the code that I didn't write directly is similar to when I have to debug a colleagues code, or even mine from a few months ago. I don't recall where that one module is or what exactly that code does. What occurs to me, though, is that the code generator, in this case, is not a perpetually fallible human being but a more predictably fallible AI that's much better at getting feedback. I'm finding myself enshrining all the things that I need in all the MD docs that I'm writing for it. I've heard this said many times but, I'm now seeing what that means in practice.
+In the end, a lot of the discomfort here is the general discomfort that comes with building software. The feeling I have when I dig into the code that I didn't write directly is similar to when I have to debug a colleagues code, or even mine from a few months ago. I don't recall where that one module is or what exactly that code does. What occurs to me, though, is that the code generator, in this case, is not a perpetually fallible human being but a more predictably fallible AI that's much better at getting feedback. I'm finding myself enshrining all the things that I need in all the MD docs that I'm writing for it. I've heard this said many times but I'm now seeing what that means in practice.
+
+---
+
+Time to test this thing in depth:
+
+- Basic syncing with built-in transforms work as expected
+- All the other basic commands work as expected
+- Property mapping works as far as I've tried it.

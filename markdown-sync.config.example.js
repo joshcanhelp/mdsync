@@ -63,19 +63,22 @@ module.exports = {
     },
 
     // Custom transformations for frontmatter properties
-    // Only applies to passthroughProperties, receives string values only
+    // Only applies to passthroughProperties, works with strings and arrays
     propertyTransforms: {
-      // Uppercase the title
+      // Uppercase the title (string transform)
       title: (value) => value.toUpperCase(),
 
-      // Capitalize author name
+      // Capitalize author name (string transform)
       author: (value) =>
         value
           .split(" ")
           .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
           .join(" "),
 
-      // Transform with context
+      // Transform tags array (array transform)
+      tags: (value) => value.map(tag => `blog/${tag}`),
+
+      // Transform with context (works with strings or arrays)
       modified: (value, context) => {
         // Access file path and frontmatter
         console.log(`Transforming ${context.filePath}`);

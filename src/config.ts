@@ -99,6 +99,11 @@ function mergeConfig(repoConfig: RepoConfig, userConfig: UserConfig | null): Con
       ...(userTransformations.linkOverrides || {}),
       ...(repoTransformations.linkOverrides || {}),
     },
+    propertyTransforms: {
+      ...(userTransformations.propertyTransforms || {}),
+      ...(repoTransformations.propertyTransforms || {}),
+    },
+    contentTransform: repoTransformations.contentTransform || userTransformations.contentTransform,
   };
 
   return {

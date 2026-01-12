@@ -485,26 +485,23 @@ describe("transformFrontmatter", () => {
       expect(result.content).toBe("By: Alice\n\nContent here");
     });
 
-    it("should only transform string values in property transforms", async () => {
+    it("should transform both string and array values in property transforms", async () => {
       const frontmatter = {
         title: "Test",
-        count: 42,
         tags: ["a", "b"],
       };
 
-      const config = createTestConfig([], ["title", "count", "tags"]);
+      const config = createTestConfig([], ["title", "tags"]);
       config.transformations.propertyTransforms = {
-        title: (value) => value.toUpperCase(),
-        count: () => "SHOULD NOT BE CALLED",
-        tags: () => "SHOULD NOT BE CALLED",
+        title: (value) => (value as string).toUpperCase(),
+        tags: (value) => (value as string[]).map(tag => tag.toUpperCase()),
       };
 
       const result = await transformFrontmatter("Content", frontmatter, {}, config, "test.md");
 
       expect(result.frontmatter).toEqual({
         title: "TEST",
-        count: 42,
-        tags: ["a", "b"],
+        tags: ["A", "B"],
       });
     });
 

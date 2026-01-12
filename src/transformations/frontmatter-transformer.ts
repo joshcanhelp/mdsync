@@ -86,9 +86,9 @@ export async function transformFrontmatter(
       let value = frontmatter[prop];
 
       // Apply custom transform if defined for this property
-      if (prop in propertyTransforms && typeof value === "string") {
+      if (prop in propertyTransforms) {
         const transformer = propertyTransforms[prop];
-        value = await transformer(value, transformContext);
+        value = await transformer(value as string | string[], transformContext);
       }
 
       outputFrontmatter[prop] = value;
