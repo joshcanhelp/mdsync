@@ -1,66 +1,34 @@
 # mdsync
 
-Sync markdown files from personal note directories into a shared repository with multi-user support. Each user's files are identified by their user ID embedded in the filename, allowing multiple people to sync notes into the same repository without conflicts.
-
-## Features
-
-- Multi-user support with automatic user ID detection
-- Configurable routing based on folder paths and frontmatter tags
-- Filter files by required tags and frontmatter properties
-- Built-in content transformations (wikilink resolution, frontmatter handling)
-- Collision detection prevents conflicts
-- Orphaned file cleanup
+Sync markdown files from personal note directories into a shared repository with multi-user support.
 
 ## Installation
 
-### Global Installation
+### Globally
 
 ```bash
-npm install -g mdsync
+npm install -g @joshcanhelp/mdsync
 ```
 
-### Local Installation (from tarball for testing)
+### In an npm project
 
 ```bash
-# From the project directory, create a package
-npm pack
-
-# In your target directory
-npm install /path/to/markdown-sync-0.1.0.tgz
-
-# Or install globally from tarball
-npm install -g /path/to/markdown-sync-0.1.0.tgz
+npm install --save-dev @joshcanhelp/mdsync
 ```
 
-### Development Setup
+### For development
 
 ```bash
 npm install
 npm run build
+npm run mdsync [COMMAND]
 ```
 
 ## Configuration
 
 Two configuration files control behavior:
 
-### User Config (required)
-
-Create `.markdown-sync.user.cjs` in the repo root or your home directory. This file contains personal settings and should NOT be committed.
-
-See [.markdown-sync.user.example.cjs](.markdown-sync.user.example.cjs) for a complete example.
-
-Required fields:
-- `sourceDir` - Path to your markdown files
-
-Optional fields:
-- `userId` - Override auto-detected user ID
-- `routes` - Define routes if no repo config exists
-- `exclude` - Patterns to exclude
-- `requireTags` - Required frontmatter tags
-- `requireProps` - Required frontmatter properties
-- `transformations` - Content transformation settings
-
-### Repo Config (optional)
+### Repo Config
 
 Create `markdown-sync.config.cjs` in the repo root. This file defines shared settings and should be committed.
 
@@ -74,6 +42,25 @@ Optional fields:
 - `exclude` - Patterns to exclude from syncing
 - `requireTags` - Files must have ALL these tags
 - `requireProps` - Files must have matching property values
+- `transformations` - Content transformation settings
+
+### User Config
+
+Create `.markdown-sync.user.cjs` in the repo root or your home directory. This file contains personal settings and should NOT be committed.
+
+See [.markdown-sync.user.example.cjs](.markdown-sync.user.example.cjs) for a complete example.
+
+**Required:**
+
+- `sourceDir` - Path to your markdown files
+
+Optional fields:
+
+- `userId` - Override auto-detected user ID
+- `routes` - Define routes if no repo config exists
+- `exclude` - Patterns to exclude
+- `requireTags` - Required frontmatter tags
+- `requireProps` - Required frontmatter properties
 - `transformations` - Content transformation settings
 
 ## User ID Detection
@@ -227,6 +214,7 @@ Perform the actual sync:
 
 ```bash
 mdsync sync
+mdsync sync --verbose
 ```
 
 ### Clean Up
@@ -236,46 +224,3 @@ Remove all synced files for the current user:
 ```bash
 mdsync clean
 ```
-
-## Workflow Example
-
-```bash
-# 1. Check current configuration
-mdsync config
-
-# 2. See which files would be synced
-mdsync scan
-
-# 3. Preview changes (dry-run)
-mdsync status
-
-# 4. Sync for real
-mdsync sync
-
-# 5. To start fresh, remove all synced files
-mdsync clean
-```
-
-## Development
-
-Run tests:
-
-```bash
-npm test
-```
-
-Build TypeScript:
-
-```bash
-npm run build
-```
-
-Format code:
-
-```bash
-npm run format
-```
-
-## License
-
-MIT
