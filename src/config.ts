@@ -104,7 +104,8 @@ function mergeConfig(repoConfig: RepoConfig, userConfig: UserConfig | null): Con
       ...(repoTransformations.propertyTransforms || {}),
     },
     contentTransform: repoTransformations.contentTransform || userTransformations.contentTransform,
-    filenameTransform: repoTransformations.filenameTransform || userTransformations.filenameTransform,
+    filenameTransform:
+      repoTransformations.filenameTransform || userTransformations.filenameTransform,
   };
 
   return {

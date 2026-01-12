@@ -86,7 +86,10 @@ async function generateOutputPath(
   outputDir: string,
   userId: string,
   frontmatter: Record<string, unknown>,
-  filenameTransform?: (filename: string, context: { filePath: string; frontmatter: Record<string, unknown> }) => string | Promise<string>
+  filenameTransform?: (
+    filename: string,
+    context: { filePath: string; frontmatter: Record<string, unknown> }
+  ) => string | Promise<string>
 ): Promise<string> {
   const filename = basename(sourcePath);
   let name = basename(filename, extname(filename));

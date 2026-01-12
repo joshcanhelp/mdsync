@@ -494,7 +494,7 @@ describe("transformFrontmatter", () => {
       const config = createTestConfig([], ["title", "tags"]);
       config.transformations.propertyTransforms = {
         title: (value) => (value as string).toUpperCase(),
-        tags: (value) => (value as string[]).map(tag => tag.toUpperCase()),
+        tags: (value) => (value as string[]).map((tag) => tag.toUpperCase()),
       };
 
       const result = await transformFrontmatter("Content", frontmatter, {}, config, "test.md");

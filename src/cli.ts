@@ -41,7 +41,7 @@ Config files:
       console.log(`  Output:      ${config.outputDir}`);
 
       if (config.requireTags && config.requireTags.length > 0) {
-        console.log(`\nRequired Tags: ${config.requireTags.map(t => `#${t}`).join(", ")}`);
+        console.log(`\nRequired Tags: ${config.requireTags.map((t) => `#${t}`).join(", ")}`);
       }
 
       if (config.requireProps && Object.keys(config.requireProps).length > 0) {
@@ -96,7 +96,6 @@ Config files:
       if (t.filenameTransform) {
         console.log("  Filename transform: custom function configured");
       }
-
     } catch (error) {
       console.error("Error loading config:", error instanceof Error ? error.message : error);
       process.exit(1);
