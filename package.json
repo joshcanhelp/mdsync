@@ -1,5 +1,5 @@
 {
-  "name": "markdown-sync",
+  "name": "mdsync",
   "version": "0.1.0",
   "description": "Sync Markdown files with configurable routing and multi-user support",
   "main": "dist/index.js",
@@ -19,10 +19,14 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "test": "vitest run",
-    "lint": "tsc --noEmit && eslint src",
+    "lint": "tsc --noEmit && eslint src && prettier --check \"src/**/*.ts\"",
     "format": "prettier --write \"src/**/*.ts\"",
     "pre-commit": "npm run format && npm run lint && npm run test",
-    "mdsync": "tsx src/cli.ts"
+    "mdsync": "tsx src/cli.ts",
+    "version:patch": "./scripts/version-bump.sh patch",
+    "version:minor": "./scripts/version-bump.sh minor",
+    "version:major": "./scripts/version-bump.sh major",
+    "release": "./scripts/release.sh"
   },
   "keywords": [
     "markdown",
@@ -32,6 +36,14 @@
   ],
   "author": "Josh C <josh@joshcanhelp.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joshcanhelp/markdown-sync.git"
+  },
+  "bugs": {
+    "url": "https://github.com/joshcanhelp/markdown-sync/issues"
+  },
+  "homepage": "https://github.com/joshcanhelp/markdown-sync#readme",
   "devDependencies": {
     "@eslint/js": "^9.39.2",
     "@tsconfig/node24": "^24.0.3",
