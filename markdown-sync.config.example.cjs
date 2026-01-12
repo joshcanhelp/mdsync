@@ -1,5 +1,5 @@
 // Repository-wide configuration file
-// Copy this to markdown-sync.config.js and customize for your repo
+// Copy this to markdown-sync.config.cjs and customize for your repo
 // This file should be committed to version control
 
 module.exports = {
@@ -95,6 +95,19 @@ module.exports = {
         return `> Author: ${author}\n\n${content}`;
       }
       return content;
+    },
+
+    // Custom transformation for filenames (applied before user ID is added)
+    // Receives the filename without extension
+    filenameTransform: (filename, context) => {
+      // Example: convert dates to ISO format
+      // "2024-01-09" → "2024-01-09"
+      // Or add prefix based on frontmatter
+      const category = context.frontmatter.category;
+      if (category) {
+        return `${category}-${filename}`;
+      }
+      return filename;
     },
   },
 };

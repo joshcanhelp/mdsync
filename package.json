@@ -4,9 +4,17 @@
   "description": "Sync Markdown files with configurable routing and multi-user support",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "bin": {
-    "markdown-sync": "dist/cli.js"
+    "mdsync": "dist/cli.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "markdown-sync.config.example.cjs",
+    ".markdown-sync.user.example.cjs"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",

@@ -1,5 +1,5 @@
 // User-specific configuration file
-// Copy this to .markdown-sync.user.js in your home directory or repo root
+// Copy this to .markdown-sync.user.cjs in your home directory or repo root
 // DO NOT commit this file - add it to .gitignore
 
 module.exports = {

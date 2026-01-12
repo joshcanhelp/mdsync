@@ -25,11 +25,13 @@ export async function scanSourceFiles(config: Config): Promise<SourceFile[]> {
       continue;
     }
 
-    const outputPath = generateOutputPath(
+    const outputPath = await generateOutputPath(
       absolutePath,
       route.outputPath,
       config.outputDir,
-      config.userId
+      config.userId,
+      frontmatter.props,
+      config.transformations.filenameTransform
     );
 
     sourceFiles.push({
@@ -78,15 +80,27 @@ function filterExcluded(files: string[], sourceDir: string, exclude: string[]): 
   });
 }
 
-function generateOutputPath(
+async function generateOutputPath(
   sourcePath: string,
   routeOutputPath: string,
   outputDir: string,
-  userId: string
-): string {
+  userId: string,
+  frontmatter: Record<string, unknown>,
+  filenameTransform?: (filename: string, context: { filePath: string; frontmatter: Record<string, unknown> }) => string | Promise<string>
+): Promise<string> {
   const filename = basename(sourcePath);
-  const name = basename(filename, extname(filename));
+  let name = basename(filename, extname(filename));
   const ext = extname(filename);
+
+  // Apply filename transform if provided
+  if (filenameTransform) {
+    const context = {
+      filePath: sourcePath,
+      frontmatter,
+    };
+    name = await filenameTransform(name, context);
+  }
+
   const outputFilename = `${name}.${userId}${ext}`;
 
   return join(outputDir, routeOutputPath, outputFilename);

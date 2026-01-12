@@ -13,6 +13,27 @@ Sync markdown files from personal note directories into a shared repository with
 
 ## Installation
 
+### Global Installation
+
+```bash
+npm install -g markdown-sync
+```
+
+### Local Installation (from tarball for testing)
+
+```bash
+# From the project directory, create a package
+npm pack
+
+# In your target directory
+npm install /path/to/markdown-sync-0.1.0.tgz
+
+# Or install globally from tarball
+npm install -g /path/to/markdown-sync-0.1.0.tgz
+```
+
+### Development Setup
+
 ```bash
 npm install
 npm run build
@@ -24,9 +45,9 @@ Two configuration files control behavior:
 
 ### User Config (required)
 
-Create `.markdown-sync.user.js` in the repo root or your home directory. This file contains personal settings and should NOT be committed.
+Create `.markdown-sync.user.cjs` in the repo root or your home directory. This file contains personal settings and should NOT be committed.
 
-See [.markdown-sync.user.example.js](.markdown-sync.user.example.js) for a complete example.
+See [.markdown-sync.user.example.cjs](.markdown-sync.user.example.cjs) for a complete example.
 
 Required fields:
 - `sourceDir` - Path to your markdown files
@@ -41,9 +62,9 @@ Optional fields:
 
 ### Repo Config (optional)
 
-Create `markdown-sync.config.js` in the repo root. This file defines shared settings and should be committed.
+Create `markdown-sync.config.cjs` in the repo root. This file defines shared settings and should be committed.
 
-See [markdown-sync.config.example.js](markdown-sync.config.example.js) for a complete example.
+See [markdown-sync.config.example.cjs](markdown-sync.config.example.cjs) for a complete example.
 
 Required fields:
 - `outputDir` - Where to sync files (relative to repo root)
@@ -123,7 +144,7 @@ Wikilinks (`[[internal-link]]`) are transformed based on frontmatter URL propert
 [[note.md|Display Text]] → [Display Text](https://example.com/note)
 ```
 
-Configure behavior in [markdown-sync.config.example.js](markdown-sync.config.example.js):
+Configure behavior in [markdown-sync.config.example.cjs](markdown-sync.config.example.cjs):
 
 - `urlProperty` - Frontmatter property containing the URL (default: `"link_to"`)
 - `wikilinkBehavior` - How to handle wikilinks:
@@ -140,17 +161,17 @@ Control which frontmatter properties appear in synced files:
 - `passthroughProperties` - Kept in frontmatter unchanged
 - Properties not listed in either are omitted from output
 
-See [markdown-sync.config.example.js](markdown-sync.config.example.js) for configuration examples.
+See [markdown-sync.config.example.cjs](markdown-sync.config.example.cjs) for configuration examples.
 
 ### Transformation Reporting
 
 Sync command shows unresolved wikilinks:
 
 ```bash
-npm run mdsync sync
+mdsync sync
 # Output shows: Wikilinks: 3 unresolved
 
-npm run mdsync sync --verbose
+mdsync sync --verbose
 # Shows each unresolved wikilink and its location
 ```
 
@@ -159,7 +180,7 @@ npm run mdsync sync --verbose
 ### Show Current Configuration
 
 ```bash
-npm run mdsync config
+mdsync config
 ```
 
 ### Scan Source Files
@@ -167,7 +188,7 @@ npm run mdsync config
 Show which files would be synced:
 
 ```bash
-npm run mdsync scan
+mdsync scan
 ```
 
 ### Check Status (Dry-run)
@@ -175,7 +196,7 @@ npm run mdsync scan
 Show what would change without making modifications:
 
 ```bash
-npm run mdsync status
+mdsync status
 ```
 
 ### Sync Files
@@ -183,7 +204,7 @@ npm run mdsync status
 Perform the actual sync:
 
 ```bash
-npm run mdsync sync
+mdsync sync
 ```
 
 ### Clean Up
@@ -191,26 +212,26 @@ npm run mdsync sync
 Remove all synced files for the current user:
 
 ```bash
-npm run mdsync clean
+mdsync clean
 ```
 
 ## Workflow Example
 
 ```bash
 # 1. Check current configuration
-npm run mdsync config
+mdsync config
 
 # 2. See which files would be synced
-npm run mdsync scan
+mdsync scan
 
 # 3. Preview changes (dry-run)
-npm run mdsync status
+mdsync status
 
 # 4. Sync for real
-npm run mdsync sync
+mdsync sync
 
 # 5. To start fresh, remove all synced files
-npm run mdsync clean
+mdsync clean
 ```
 
 ## Development

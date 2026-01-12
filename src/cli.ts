@@ -9,22 +9,22 @@ async function main() {
 
   if (command === "help" || command === "--help" || command === "-h") {
     console.log(`
-markdown-sync - Sync markdown files with multi-user support
+mdsync - Sync markdown files with multi-user support
 
 Usage:
-  markdown-sync config            Show current configuration
-  markdown-sync scan              Scan source files and show what would be synced
-  markdown-sync status            Show what would change (dry-run)
-  markdown-sync sync [--verbose]  Sync files with transformation
-  markdown-sync clean             Remove all synced files for current user
-  markdown-sync help              Show this help message
+  mdsync config            Show current configuration
+  mdsync scan              Scan source files and show what would be synced
+  mdsync status            Show what would change (dry-run)
+  mdsync sync [--verbose]  Sync files with transformation
+  mdsync clean             Remove all synced files for current user
+  mdsync help              Show this help message
 
 Flags:
   --verbose, -v   Show detailed transformation reports (e.g., all unresolved wikilinks)
 
 Config files:
-  - .markdown-sync.user.js (required, in repo root or home directory)
-  - markdown-sync.config.js (optional, for custom routing)
+  - .markdown-sync.user.cjs (required, in repo root or home directory)
+  - markdown-sync.config.cjs (optional, for custom routing)
 `);
     return;
   }
@@ -93,6 +93,9 @@ Config files:
       if (t.contentTransform) {
         console.log("  Content transform:  custom function configured");
       }
+      if (t.filenameTransform) {
+        console.log("  Filename transform: custom function configured");
+      }
 
     } catch (error) {
       console.error("Error loading config:", error instanceof Error ? error.message : error);
@@ -158,7 +161,7 @@ Config files:
         }
       }
 
-      console.log(`\nNo changes will be made. Run "markdown-sync sync" to apply.`);
+      console.log(`\nNo changes will be made. Run "mdsync sync" to apply.`);
     } catch (error) {
       console.error("Error checking status:", error instanceof Error ? error.message : error);
       process.exit(1);
@@ -223,7 +226,7 @@ Config files:
   }
 
   console.error(`Unknown command: ${command}`);
-  console.error('Run "markdown-sync help" for usage');
+  console.error('Run "mdsync help" for usage');
   process.exit(1);
 }
 

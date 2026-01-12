@@ -25,6 +25,12 @@ export type ContentTransformFunction = (
   context: TransformContext
 ) => string | Promise<string>;
 
+// Custom transformer function type for filenames
+export type FilenameTransformFunction = (
+  filename: string,
+  context: TransformContext
+) => string | Promise<string>;
+
 // Transformation configuration
 export interface TransformationConfig {
   // Frontmatter property containing URLs for link resolution
@@ -41,6 +47,8 @@ export interface TransformationConfig {
   propertyTransforms?: Record<string, PropertyTransformFunction>;
   // Custom transformer for main content
   contentTransform?: ContentTransformFunction;
+  // Custom transformer for filenames (before user ID is added)
+  filenameTransform?: FilenameTransformFunction;
 }
 
 // Repo-wide configuration (committed to version control)
