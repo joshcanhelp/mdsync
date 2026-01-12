@@ -21,7 +21,7 @@
     "test": "vitest run",
     "lint": "tsc --noEmit && eslint src && prettier --check \"src/**/*.ts\"",
     "format": "prettier --write \"src/**/*.ts\"",
-    "pre-commit": "npm run format && npm run lint && npm run test",
+    "pre-commit": "npm run lint && npm run test",
     "mdsync": "tsx src/cli.ts",
     "version:patch": "./scripts/version-bump.sh patch",
     "version:minor": "./scripts/version-bump.sh minor",

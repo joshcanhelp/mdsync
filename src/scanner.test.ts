@@ -33,6 +33,7 @@ describe("scanSourceFiles", () => {
       exclude: [],
       requireTags: [],
       requireProps: {},
+      transformations: {},
     };
 
     const files = await scanSourceFiles(config);
@@ -54,6 +55,7 @@ describe("scanSourceFiles", () => {
       exclude: [],
       requireTags: [],
       requireProps: {},
+      transformations: {},
     };
 
     const files = await scanSourceFiles(config);
@@ -81,6 +83,7 @@ tags:
       exclude: [],
       requireTags: [],
       requireProps: {},
+      transformations: {},
     };
 
     const files = await scanSourceFiles(config);
@@ -104,6 +107,7 @@ tags:
       exclude: [],
       requireTags: [],
       requireProps: {},
+      transformations: {},
     };
 
     const files = await scanSourceFiles(config);
@@ -129,6 +133,7 @@ tags:
       exclude: ["templates/**"],
       requireTags: [],
       requireProps: {},
+      transformations: {},
     };
 
     const files = await scanSourceFiles(config);
@@ -148,6 +153,7 @@ tags:
       exclude: [],
       requireTags: [],
       requireProps: {},
+      transformations: {},
     };
 
     const files = await scanSourceFiles(config);
@@ -166,6 +172,7 @@ tags:
       exclude: [],
       requireTags: [],
       requireProps: {},
+      transformations: {},
     };
 
     const files = await scanSourceFiles(config);
@@ -186,6 +193,7 @@ tags:
       exclude: [],
       requireTags: [],
       requireProps: {},
+      transformations: {},
     };
 
     const files = await scanSourceFiles(config);
@@ -217,6 +225,7 @@ status: draft
       exclude: [],
       requireTags: [],
       requireProps: { status: "publish" },
+      transformations: {},
     };
 
     const files = await scanSourceFiles(config);
@@ -250,6 +259,7 @@ references: "[[Other/Random Topic]]"
       exclude: [],
       requireTags: [],
       requireProps: { references: "[[Technology/Publishing Obsidian" },
+      transformations: {},
     };
 
     const files = await scanSourceFiles(config);
@@ -289,6 +299,7 @@ status: draft
       exclude: [],
       requireTags: [],
       requireProps: { status: ["publish", "review"] },
+      transformations: {},
     };
 
     const files = await scanSourceFiles(config);
@@ -316,6 +327,7 @@ title: My Title
       exclude: [],
       requireTags: [],
       requireProps: { title: "*" },
+      transformations: {},
     };
 
     const files = await scanSourceFiles(config);
@@ -358,6 +370,7 @@ tags:
       exclude: [],
       requireTags: ["public"],
       requireProps: { status: "published" },
+      transformations: {},
     };
 
     const files = await scanSourceFiles(config);
