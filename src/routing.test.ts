@@ -29,7 +29,7 @@ describe("matchRoute", () => {
     expect(result).toEqual(routes[0]);
   });
 
-  it("should match by either sourcePath OR tag when both specified", () => {
+  it("should match by BOTH sourcePath AND tag when both specified", () => {
     const routes: Route[] = [
       {
         sourcePath: "Archive/**/*.md",
@@ -38,11 +38,17 @@ describe("matchRoute", () => {
       },
     ];
 
-    const resultByPath = matchRoute("Archive/2023/old-note.md", [], routes);
-    expect(resultByPath).toEqual(routes[0]);
+    // Should match when both path AND tag match
+    const resultBoth = matchRoute("Archive/2023/old-note.md", ["archived"], routes);
+    expect(resultBoth).toEqual(routes[0]);
 
-    const resultByTag = matchRoute("notes/old-project.md", ["archived"], routes);
-    expect(resultByTag).toEqual(routes[0]);
+    // Should NOT match when only path matches (no tag)
+    const resultPathOnly = matchRoute("Archive/2023/old-note.md", [], routes);
+    expect(resultPathOnly).toBeNull();
+
+    // Should NOT match when only tag matches (wrong path)
+    const resultTagOnly = matchRoute("notes/old-project.md", ["archived"], routes);
+    expect(resultTagOnly).toBeNull();
   });
 
   it("should return first matching route", () => {

@@ -191,37 +191,3 @@ Enable strict mode for tool calling when available. This prevents malformed tool
 
 ### Handling Tool Forgetting
 Configure nudges for when the agent outputs plain text instead of calling tools. Send a reminder to use the appropriate tool.
-
-## Lower Impact (But Useful)
-
-### Token Budget Awareness
-Be aware that agents have output token limits. For large changes, break into multiple explicit steps to avoid truncation.
-
-**Example prompt:**
-> First, show me the changes to imports and type definitions. Then I'll ask for the function implementations.
-
-### Semantic Compression for Long Context
-When including a lot of context, summarize aggressively but preserve structure.
-
-**Instead of pasting 500 lines, write:**
-> auth.ts exports: parseToken(string) → Token, validateToken(Token) → boolean.
-> Token type has fields: value, expiry, userId.
-> parseToken throws InvalidTokenError on malformed input.
-
-### Explicit State Transitions
-For stateful operations, have the agent state the before and after.
-
-**Example prompt:**
-> Before making this change, tell me: what is the current state, and what will the state be after your change?
-
-### Diff Review Before Apply
-For non-trivial changes, ask to see the diff before applying.
-
-**Example prompt:**
-> Show me the diff of what you're planning to change before making the edit.
-
-### No Emoji
-Don't use emoji in code, comments, or documentation unless explicitly requested.
-
-### Skills as Structured Documentation
-Skills are markdown files with instructions and code patterns. They're retrieved and loaded into context when relevant. You can create custom skills for domain-specific patterns.

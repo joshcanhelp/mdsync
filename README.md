@@ -16,7 +16,7 @@ Sync markdown files from personal note directories into a shared repository with
 ### Global Installation
 
 ```bash
-npm install -g markdown-sync
+npm install -g mdsync
 ```
 
 ### Local Installation (from tarball for testing)
@@ -105,7 +105,29 @@ Each route can specify:
 - `tag` - Frontmatter tag to match (without # prefix)
 - `outputPath` - Subdirectory for matched files
 
-If a route has both `sourcePath` and `tag`, the file matches if EITHER condition is true (OR logic).
+If a route has both `sourcePath` and `tag`, the file must match BOTH conditions (AND logic).
+
+Examples:
+```javascript
+// Match only files in Logs/ with artifact/devlog tag
+{
+  sourcePath: "Logs/**/*.md",
+  tag: "artifact/devlog",
+  outputPath: "devlog"
+}
+
+// Match any file with working tag
+{
+  tag: "working",
+  outputPath: "projects"
+}
+
+// Match any file in Archive/
+{
+  sourcePath: "Archive/**/*.md",
+  outputPath: "archive"
+}
+```
 
 ## Filtering
 

@@ -11,20 +11,12 @@ export function matchRoute(relativePath: string, tags: string[], routes: Route[]
 }
 
 function isRouteMatch(relativePath: string, tags: string[], route: Route): boolean {
-  const pathMatches = route.sourcePath ? minimatch(relativePath, route.sourcePath) : false;
-  const tagMatches = route.tag ? tags.includes(route.tag) : false;
+  const pathMatches = route.sourcePath ? minimatch(relativePath, route.sourcePath) : true;
+  const tagMatches = route.tag ? tags.includes(route.tag) : true;
 
-  if (route.sourcePath && route.tag) {
-    return pathMatches || tagMatches;
-  }
-
-  if (route.sourcePath) {
-    return pathMatches;
-  }
-
-  if (route.tag) {
-    return tagMatches;
-  }
-
-  return false;
+  // Both conditions must be true (AND logic)
+  // If only sourcePath is specified, pathMatches must be true (tagMatches defaults to true)
+  // If only tag is specified, tagMatches must be true (pathMatches defaults to true)
+  // If both are specified, both must be true
+  return pathMatches && tagMatches;
 }
