@@ -51,7 +51,7 @@ git pull origin "$BRANCH"
 
 # Run tests
 print_info "Running pre-commit..."
-npm pre-commit
+npm run pre-commit
 
 # Build
 print_info "Building project..."
