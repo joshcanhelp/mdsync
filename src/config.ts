@@ -27,7 +27,7 @@ export async function loadConfig(repoRoot: string = process.cwd()): Promise<Conf
 }
 
 async function loadRepoConfig(repoRoot: string): Promise<RepoConfig> {
-  const configPath = join(repoRoot, "markdown-sync.config.cjs");
+  const configPath = join(repoRoot, "mdsync.config.cjs");
 
   try {
     await access(configPath);
@@ -42,7 +42,7 @@ async function loadRepoConfig(repoRoot: string): Promise<RepoConfig> {
 }
 
 async function loadUserConfig(repoRoot: string): Promise<UserConfig | null> {
-  const userConfigName = ".markdown-sync.user.cjs";
+  const userConfigName = ".mdsync.user.cjs";
 
   const repoUserConfigPath = join(repoRoot, userConfigName);
   try {
@@ -73,8 +73,8 @@ function mergeConfig(repoConfig: RepoConfig, userConfig: UserConfig | null): Con
   if (!userConfig?.sourceDir) {
     throw new Error(
       "Source directory not configured. Please specify sourceDir in:\n" +
-        "  - .markdown-sync.user.cjs (repo root or home directory)\n" +
-        "  OR create this file from .markdown-sync.user.example.cjs"
+        "  - .mdsync.user.cjs (repo root or home directory)\n" +
+        "  OR create this file from .mdsync.user.example.cjs"
     );
   }
 

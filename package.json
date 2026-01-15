@@ -12,8 +12,8 @@
     "dist",
     "README.md",
     "LICENSE",
-    "markdown-sync.config.example.cjs",
-    ".markdown-sync.user.example.cjs"
+    "mdsync.config.example.cjs",
+    ".mdsync.user.example.cjs"
   ],
   "scripts": {
     "build": "tsc",

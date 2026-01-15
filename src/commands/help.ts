@@ -15,7 +15,7 @@ Flags:
   --verbose, -v   Show detailed transformation reports (e.g., all unresolved wikilinks)
 
 Config files:
-  - .markdown-sync.user.cjs (required, in home directory)
-  - markdown-sync.config.cjs (optional, in repo root for custom routing)
+  - .mdsync.user.cjs (required, in home directory)
+  - mdsync.config.cjs (optional, in repo root for custom routing)
 `);
 }

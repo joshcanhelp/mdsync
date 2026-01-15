@@ -2,14 +2,15 @@ import * as readline from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import { homedir } from "node:os";
 
 export async function initCommand(): Promise<void> {
   const rl = readline.createInterface({ input, output });
 
   console.log("Welcome to mdsync initialization!\n");
   console.log("This will create your configuration files:");
-  console.log("  - .markdown-sync.user.cjs (in your home directory)");
-  console.log("  - markdown-sync.config.cjs (in this repository)\n");
+  console.log("  - .mdsync.user.cjs (in your home directory)");
+  console.log("  - mdsync.config.cjs (in this repository)\n");
 
   try {
     // Ask for source directory
@@ -97,10 +98,10 @@ export async function initCommand(): Promise<void> {
     rl.close();
 
     // Create user config in home directory
-    const userConfigPath = path.join(process.cwd(), ".markdown-sync.user.cjs");
+    const userConfigPath = path.join(homedir(), ".mdsync.user.cjs");
     const userConfigContent = `// User-specific configuration for mdsync
 // This file is NOT committed to git and contains your personal settings
-// For all options, see: https://github.com/joshcanhelp/mdsync/blob/main/.markdown-sync.user.example.cjs
+// For all options, see: https://github.com/joshcanhelp/mdsync/blob/main/.mdsync.user.example.cjs
 
 module.exports = {
   sourceDir: "${sourceDir}",
@@ -108,7 +109,7 @@ module.exports = {
 `;
 
     // Create repo config in current directory
-    const repoConfigPath = path.join(process.cwd(), "markdown-sync.config.cjs");
+    const repoConfigPath = path.join(process.cwd(), "mdsync.config.cjs");
 
     // Format routes for config file
     let routesString = "[]";
@@ -125,7 +126,7 @@ module.exports = {
 
     const repoConfigContent = `// Repository-wide configuration for mdsync
 // This file IS committed to git and shared by all users
-// For all options, see: https://github.com/joshcanhelp/mdsync/blob/main/markdown-sync.config.example.cjs
+// For all options, see: https://github.com/joshcanhelp/mdsync/blob/main/mdsync.config.example.cjs
 
 module.exports = {
   outputDir: "${outputDir}",
@@ -161,7 +162,7 @@ module.exports = {
 
     console.log("\nNext steps:");
     if (routes.length === 0) {
-      console.log("1. Edit markdown-sync.config.cjs to add routing rules");
+      console.log("1. Edit mdsync.config.cjs to add routing rules");
       console.log("2. Run 'mdsync scan' to see what files would be synced");
     } else {
       console.log("1. Run 'mdsync scan' to see what files would be synced");
