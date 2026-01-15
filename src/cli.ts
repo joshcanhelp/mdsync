@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { helpCommand } from "./commands/help.js";
+import { initCommand } from "./commands/init.js";
 import { configCommand } from "./commands/config.js";
 import { scanCommand } from "./commands/scan.js";
 import { statusCommand } from "./commands/status.js";
@@ -16,6 +17,10 @@ async function main() {
       case "--help":
       case "-h":
         await helpCommand();
+        break;
+
+      case "init":
+        await initCommand();
         break;
 
       case "config":
