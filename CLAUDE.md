@@ -1,10 +1,13 @@
 # Claude Instructions for markdown-sync
 
-This file contains project-specific instructions for AI agents working on this repository.
+This file contains project-specific instructions for AI agents working on this repository. Please acknowledge that you've read this when we start a session. 
 
 ## Project Context
 
 This is an npm module that syncs Markdown files from source directories into a target repository with multi-user support. Files are routed to different output locations based on configurable rules (folder patterns and frontmatter tags).
+
+- [Project design and architecture](./DESIGN.md)
+- [Rules to follow when we code together](./CHOP.md)
 
 ## Development Workflow
 
