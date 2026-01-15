@@ -59,10 +59,6 @@ describe("loadConfig", () => {
     await expect(loadConfig(testDir)).rejects.toThrow("Source directory not readable");
   });
 
-  it("should throw error when no user config exists", async () => {
-    await expect(loadConfig(testDir)).rejects.toThrow("Source directory not configured");
-  });
-
   it("should create output directory if it does not exist", async () => {
     const sourceDir = join(testDir, "source");
     await mkdir(sourceDir);

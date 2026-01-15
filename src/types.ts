@@ -55,6 +55,9 @@ export interface TransformationConfig {
 export interface RepoConfig {
   // Output directory relative to repo root
   outputDir: string;
+  // Enable multi-user support (default: true)
+  // When false, user IDs are not appended to filenames
+  userId?: boolean;
   // Routing rules evaluated in order (first match wins)
   // Optional - can be provided by user config if not specified
   routes?: Route[];
@@ -91,6 +94,7 @@ export interface UserConfig {
 // Merged configuration with all required fields populated
 export interface Config {
   userId: string;
+  userIdEnabled: boolean;
   sourceDir: string;
   outputDir: string;
   routes: Route[];

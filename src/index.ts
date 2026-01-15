@@ -19,8 +19,9 @@ export async function syncFiles(config: Config, verbose: boolean = false): Promi
     filesCopied: 0,
   };
 
-  // Check for collisions with other users
-  const collisions = await detectCollisions(sourceFiles, config.userId);
+  // Check for collisions with other users (only if multi-user is enabled)
+  const collisions =
+    config.userIdEnabled !== false ? await detectCollisions(sourceFiles, config.userId) : [];
   if (collisions.length > 0) {
     result.collisions = collisions;
     throw new Error(
@@ -87,7 +88,10 @@ export async function syncFiles(config: Config, verbose: boolean = false): Promi
 
   // Clean up orphaned output files
   const outputPaths = new Set(sourceFiles.map((f) => f.outputPath));
-  const orphanedFiles = await findOrphanedFiles(config.outputDir, config.userId, outputPaths);
+  const orphanedFiles =
+    config.userIdEnabled !== false
+      ? await findOrphanedFiles(config.outputDir, config.userId, outputPaths)
+      : await findOrphanedFilesNoUserId(config.outputDir, outputPaths);
 
   for (const orphanedFile of orphanedFiles) {
     try {
@@ -103,9 +107,13 @@ export async function syncFiles(config: Config, verbose: boolean = false): Promi
 
 export async function getStatus(config: Config): Promise<SyncStatus> {
   const sourceFiles = await scanSourceFiles(config);
-  const collisions = await detectCollisions(sourceFiles, config.userId);
+  const collisions =
+    config.userIdEnabled !== false ? await detectCollisions(sourceFiles, config.userId) : [];
   const outputPaths = new Set(sourceFiles.map((f) => f.outputPath));
-  const toDelete = await findOrphanedFiles(config.outputDir, config.userId, outputPaths);
+  const toDelete =
+    config.userIdEnabled !== false
+      ? await findOrphanedFiles(config.outputDir, config.userId, outputPaths)
+      : await findOrphanedFilesNoUserId(config.outputDir, outputPaths);
 
   return {
     toCopy: sourceFiles,
@@ -115,7 +123,10 @@ export async function getStatus(config: Config): Promise<SyncStatus> {
 }
 
 export async function cleanFiles(config: Config): Promise<number> {
-  const userFiles = await findUserFiles(config.outputDir, config.userId);
+  const userFiles =
+    config.userIdEnabled !== false
+      ? await findUserFiles(config.outputDir, config.userId)
+      : await findAllMarkdownFiles(config.outputDir);
   let deleted = 0;
 
   for (const file of userFiles) {
@@ -193,6 +204,37 @@ async function findUserFiles(dir: string, userId: string): Promise<string[]> {
         const subFiles = await findUserFiles(fullPath, userId);
         files.push(...subFiles);
       } else if (entry.isFile() && entry.name.includes(pattern)) {
+        files.push(fullPath);
+      }
+    }
+  } catch (_error) {
+    // Directory doesn't exist, no files to return
+  }
+
+  return files;
+}
+
+async function findOrphanedFilesNoUserId(
+  outputDir: string,
+  currentOutputPaths: Set<string>
+): Promise<string[]> {
+  const allFiles = await findAllMarkdownFiles(outputDir);
+  return allFiles.filter((file) => !currentOutputPaths.has(file));
+}
+
+async function findAllMarkdownFiles(dir: string): Promise<string[]> {
+  const files: string[] = [];
+
+  try {
+    const entries = await readdir(dir, { withFileTypes: true });
+
+    for (const entry of entries) {
+      const fullPath = join(dir, entry.name);
+
+      if (entry.isDirectory()) {
+        const subFiles = await findAllMarkdownFiles(fullPath);
+        files.push(...subFiles);
+      } else if (entry.isFile() && entry.name.endsWith(".md")) {
         files.push(fullPath);
       }
     }

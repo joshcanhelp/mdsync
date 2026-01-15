@@ -22,7 +22,7 @@ export async function loadConfig(repoRoot: string = process.cwd()): Promise<Conf
   const repoConfig = await loadRepoConfig(repoRoot);
   const userConfig = await loadUserConfig(repoRoot);
   const config = mergeConfig(repoConfig, userConfig);
-  await validateConfig(config, repoRoot);
+  await validateConfig(config, repoRoot, repoConfig, userConfig);
   return config;
 }
 
@@ -64,7 +64,11 @@ async function loadUserConfig(repoRoot: string): Promise<UserConfig | null> {
 }
 
 function mergeConfig(repoConfig: RepoConfig, userConfig: UserConfig | null): Config {
-  const userId = detectUserId(userConfig?.userId);
+  // Determine if userId is enabled (defaults to true if not specified)
+  const userIdEnabled = repoConfig.userId !== false;
+
+  // Only detect userId if it's enabled
+  const userId = userIdEnabled ? detectUserId(userConfig?.userId) : "";
 
   if (!userConfig?.sourceDir) {
     throw new Error(
@@ -110,6 +114,7 @@ function mergeConfig(repoConfig: RepoConfig, userConfig: UserConfig | null): Con
 
   return {
     userId,
+    userIdEnabled,
     sourceDir: userConfig.sourceDir,
     outputDir: repoConfig.outputDir,
     routes,
@@ -120,10 +125,24 @@ function mergeConfig(repoConfig: RepoConfig, userConfig: UserConfig | null): Con
   };
 }
 
-async function validateConfig(config: Config, repoRoot: string): Promise<void> {
+async function validateConfig(
+  config: Config,
+  repoRoot: string,
+  repoConfig: RepoConfig,
+  userConfig: UserConfig | null
+): Promise<void> {
   const errors: string[] = [];
 
-  if (!config.userId) {
+  // Check for conflicting userId configuration
+  if (repoConfig.userId === false && userConfig?.userId) {
+    errors.push(
+      "Conflict: Repository has disabled multi-user support (userId: false) " +
+        "but user config specifies a userId. Remove userId from your user config."
+    );
+  }
+
+  // Only require userId if userIdEnabled is true
+  if (config.userIdEnabled && !config.userId) {
     errors.push("User ID is required");
   }
 

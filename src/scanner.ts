@@ -7,6 +7,7 @@ import type { Config, SourceFile } from "./types.js";
 
 export async function scanSourceFiles(config: Config): Promise<SourceFile[]> {
   const allFiles = await findMarkdownFiles(config.sourceDir);
+
   const filteredFiles = filterExcluded(allFiles, config.sourceDir, config.exclude);
 
   const sourceFiles: SourceFile[] = [];
@@ -30,6 +31,7 @@ export async function scanSourceFiles(config: Config): Promise<SourceFile[]> {
       route.outputPath,
       config.outputDir,
       config.userId,
+      config.userIdEnabled !== false,
       frontmatter.props,
       config.transformations.filenameTransform
     );
@@ -85,6 +87,7 @@ async function generateOutputPath(
   routeOutputPath: string,
   outputDir: string,
   userId: string,
+  userIdEnabled: boolean,
   frontmatter: Record<string, unknown>,
   filenameTransform?: (
     filename: string,
@@ -104,7 +107,8 @@ async function generateOutputPath(
     name = await filenameTransform(name, context);
   }
 
-  const outputFilename = `${name}.${userId}${ext}`;
+  // Only append userId if multi-user support is enabled
+  const outputFilename = userIdEnabled ? `${name}.${userId}${ext}` : `${name}${ext}`;
 
   return join(outputDir, routeOutputPath, outputFilename);
 }
