@@ -1,6 +1,9 @@
 # mdsync
 
-Sync markdown files from personal note directories into a shared repository with multi-user support.
+Sync markdown files from personal note directories into a shared repository with multi-user support. This was created to manage devlogs, engineering notes, and ADRs in an Obsidian repo but still make them available to the rest of the team. It works by looking for files in specific routes, filtered by tags or other properties, then copying the found notes over, with optional tranfomrations. I use it here:
+
+- [Devlogs in this repo](./notes/)
+- [Devlogs and ADRs for this project](https://github.com/PersonalDataPipeline/pdpl-cli/tree/main/docs)
 
 ## Installation
 

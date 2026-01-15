@@ -28,3 +28,4 @@ Time to test this thing in depth:
 - Basic syncing with built-in transforms work as expected
 - All the other basic commands work as expected
 - Property mapping works as far as I've tried it.
+- I found a bug with the custom transforms but Claude figured it out
