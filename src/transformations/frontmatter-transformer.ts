@@ -134,13 +134,17 @@ function capitalizeFirstLetter(str: string): string {
 
 function removeUnresolvedWikilinks(content: string): string {
   // Replace unresolved wikilinks with their text content
-  // [[Link]] -> Link
   // [[Link|Display Text]] -> Display Text
+  // [[folder/file.md]] -> file
   return content.replace(
     /\[\[([^\]|]+)(\|([^\]]+))?\]\]/g,
     (_match, linkTarget, _pipe, displayText) => {
-      // Use display text if provided, otherwise use the link target
-      return displayText ? displayText.trim() : linkTarget.trim();
+      if (displayText) {
+        return displayText.trim();
+      }
+      // Extract just the filename from the path and remove .md extension
+      const filename = linkTarget.trim().split("/").pop() || linkTarget.trim();
+      return filename.endsWith(".md") ? filename.slice(0, -3) : filename;
     }
   );
 }

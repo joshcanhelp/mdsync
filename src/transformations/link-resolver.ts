@@ -69,14 +69,8 @@ export function transformWikilinks(
         return "";
       }
 
-      // For "resolve" behavior, extract the text from the wikilink
-      // Use display text if provided, otherwise use the filename without path
-      if (displayText) {
-        return displayText.trim();
-      }
-      // Extract just the filename (without path) and remove .md extension if present
-      const filename = trimmedTarget.split("/").pop() || trimmedTarget;
-      return filename.endsWith(".md") ? filename.slice(0, -3) : filename;
+      // For "resolve" behavior, preserve the wikilink as-is if it can't be resolved
+      return match;
     }
 
     return `[${text}](${url})`;
