@@ -8,13 +8,18 @@ export interface FrontmatterData {
 }
 
 export async function parseFrontmatter(filePath: string): Promise<FrontmatterData> {
-  const content = await readFile(filePath, "utf-8");
-  const { data } = matter(content);
+  try {
+    const content = await readFile(filePath, "utf-8");
+    const { data } = matter(content);
 
-  return {
-    tags: extractTags(data),
-    props: data,
-  };
+    return {
+      tags: extractTags(data),
+      props: data,
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to parse frontmatter in ${filePath}: ${message}`);
+  }
 }
 
 export function parseFrontmatterFromString(content: string): {
