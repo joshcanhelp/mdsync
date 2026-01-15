@@ -5,5 +5,5 @@ dist/
 *.tsbuildinfo
 
 # User-specific configuration
-.markdown-sync.user.cjs
-markdown-sync.config.cjs
+.mdsync.user.cjs
+mdsync.config.cjs
