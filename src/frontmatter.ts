@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import matter from "gray-matter";
+import yaml from "js-yaml";
 
 export interface FrontmatterData {
   tags: string[];
@@ -36,7 +37,22 @@ export function stringifyFrontmatter(
     return content;
   }
 
-  return matter.stringify(content, frontmatter);
+  // Configure gray-matter to use quoted strings instead of block literals
+  return matter.stringify(content, frontmatter, {
+    engines: {
+      yaml: {
+        parse: (input: string): object => yaml.load(input) as object,
+        stringify: (data: object): string => {
+          // Use js-yaml with custom options to prefer double-quoted style
+          return yaml.dump(data, {
+            quotingType: '"',
+            forceQuotes: true,
+            lineWidth: -1, // Disable line wrapping
+          });
+        },
+      },
+    },
+  });
 }
 
 function extractTags(frontmatter: Record<string, unknown>): string[] {
