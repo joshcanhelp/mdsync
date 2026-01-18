@@ -412,6 +412,132 @@ describe("transformFrontmatter", () => {
     });
   });
 
+  describe("empty property filtering", () => {
+    it("should remove properties with null values after transformation", async () => {
+      const frontmatter = {
+        title: "Title",
+        emptyProp: "value",
+      };
+
+      const config = createTestConfig([], ["title", "emptyProp"]);
+      config.transformations.propertyTransforms = {
+        emptyProp: () => null,
+      };
+
+      const result = await transformFrontmatter("Content", frontmatter, {}, config, "test.md");
+
+      expect(result.frontmatter).toEqual({ title: "Title" });
+    });
+
+    it("should remove properties with undefined values after transformation", async () => {
+      const frontmatter = {
+        title: "Title",
+        emptyProp: "value",
+      };
+
+      const config = createTestConfig([], ["title", "emptyProp"]);
+      config.transformations.propertyTransforms = {
+        emptyProp: () => undefined,
+      };
+
+      const result = await transformFrontmatter("Content", frontmatter, {}, config, "test.md");
+
+      expect(result.frontmatter).toEqual({ title: "Title" });
+    });
+
+    it("should remove properties with empty string values after transformation", async () => {
+      const frontmatter = {
+        title: "Title",
+        emptyProp: "value",
+      };
+
+      const config = createTestConfig([], ["title", "emptyProp"]);
+      config.transformations.propertyTransforms = {
+        emptyProp: () => "",
+      };
+
+      const result = await transformFrontmatter("Content", frontmatter, {}, config, "test.md");
+
+      expect(result.frontmatter).toEqual({ title: "Title" });
+    });
+
+    it("should remove properties with whitespace-only string values after transformation", async () => {
+      const frontmatter = {
+        title: "Title",
+        emptyProp: "value",
+      };
+
+      const config = createTestConfig([], ["title", "emptyProp"]);
+      config.transformations.propertyTransforms = {
+        emptyProp: () => "   ",
+      };
+
+      const result = await transformFrontmatter("Content", frontmatter, {}, config, "test.md");
+
+      expect(result.frontmatter).toEqual({ title: "Title" });
+    });
+
+    it("should remove properties with empty array values after transformation", async () => {
+      const frontmatter = {
+        title: "Title",
+        tags: ["a", "b"],
+      };
+
+      const config = createTestConfig([], ["title", "tags"]);
+      config.transformations.propertyTransforms = {
+        tags: () => [],
+      };
+
+      const result = await transformFrontmatter("Content", frontmatter, {}, config, "test.md");
+
+      expect(result.frontmatter).toEqual({ title: "Title" });
+    });
+
+    it("should keep properties with falsy but non-empty values", async () => {
+      const frontmatter = {
+        count: 5,
+        enabled: true,
+        priority: 10,
+      };
+
+      const config = createTestConfig([], ["count", "enabled", "priority"]);
+      config.transformations.propertyTransforms = {
+        count: () => 0,
+        enabled: () => false,
+      };
+
+      const result = await transformFrontmatter("Content", frontmatter, {}, config, "test.md");
+
+      expect(result.frontmatter).toEqual({
+        count: 0,
+        enabled: false,
+        priority: 10,
+      });
+    });
+
+    it("should handle multiple empty properties in one transform", async () => {
+      const frontmatter = {
+        title: "Title",
+        empty1: "value1",
+        empty2: "value2",
+        kept: "value3",
+      };
+
+      const config = createTestConfig([], ["title", "empty1", "empty2", "kept"]);
+      config.transformations.propertyTransforms = {
+        empty1: () => "",
+        empty2: () => [],
+      };
+
+      const result = await transformFrontmatter("Content", frontmatter, {}, config, "test.md");
+
+      expect(result.frontmatter).toEqual({
+        title: "Title",
+        kept: "value3",
+      });
+    });
+  });
+
   describe("custom transforms", () => {
     it("should apply custom property transform to passthrough properties", async () => {
       const frontmatter = {

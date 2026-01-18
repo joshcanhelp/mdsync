@@ -91,7 +91,10 @@ export async function transformFrontmatter(
         value = await transformer(value as string | string[], transformContext);
       }
 
-      outputFrontmatter[prop] = value;
+      // Only include property if value is not empty after transformation
+      if (!isEmpty(value)) {
+        outputFrontmatter[prop] = value;
+      }
     }
   }
 
@@ -100,6 +103,22 @@ export async function transformFrontmatter(
     frontmatter: outputFrontmatter,
     unresolvedLinks,
   };
+}
+
+function isEmpty(value: unknown): boolean {
+  if (value === null || value === undefined) {
+    return true;
+  }
+
+  if (typeof value === "string" && value.trim() === "") {
+    return true;
+  }
+
+  if (Array.isArray(value) && value.length === 0) {
+    return true;
+  }
+
+  return false;
 }
 
 function formatPropertyValueAsList(value: unknown): string[] {
